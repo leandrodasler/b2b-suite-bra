@@ -1,0 +1,40 @@
+{
+  "sku-list": {
+    "blocks": ["sku-content.desktop", "sku-content.mobile"]
+  },
+  "sku-content.desktop": {
+    "children": [
+      "sku-name",
+      "sku-image",
+      "sku-seller",
+      "sku-price",
+      "sku-inventory",
+      "sku-quantity-selector",
+      "sku-buy-button",
+      "sku-specifications",
+      "sku-highlights"
+    ]
+  },
+  "sku-content.mobile": {
+    "children": [
+      "sku-name",
+      "sku-image",
+      "sku-seller",
+      "sku-price",
+      "sku-inventory",
+      "sku-quantity-selector",
+      "sku-buy-button",
+      "sku-specifications",
+      "sku-highlights"
+    ]
+  },
+  "sku-seller": {
+    "children": ["seller-name", "seller-inventory", "seller-price"]
+  },
+  "sku-quantity-selector": {
+    "blocks": ["item-quantity"]
+  },
+  "sku-buy-button": {
+    "blocks": ["item-buy-button"]
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "name": "b2b-suite-bra",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "lint": "cd ./react && yarn lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
+    "test": "cd ./react && yarn test",
+    "lint:locales": "intl-equalizer",
+    "locales:fix": "intl-equalizer --fix",
+    "verify": "yarn lint && yarn lint:locales && yarn test"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint && yarn lint:locales && yarn locales:fix",
+      "pre-push": "yarn verify"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,js,tsx,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,graphql,gql}": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@vtex/intl-equalizer": "^2.3.0",
+    "@vtex/prettier-config": "^0.1.4",
+    "eslint": "^7.12.1",
+    "eslint-config-vtex": "^12.3.2",
+    "eslint-config-vtex-react": "^6.3.2",
+    "husky": "^4.2.3",
+    "lint-staged": "^10.1.1",
+    "prettier": "^2.0.2",
+    "typescript": "^3.8.3"
+  },
+  "version": "0.0.2",
+  "intl-equalizer": {
+    "referenceLocale": "en",
+    "localeDirectory": "messages"
+  }
+}

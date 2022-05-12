@@ -1,0 +1,87 @@
+.container {
+  font-size: 0.85rem;
+  gap: 40px;
+  --arrow-placement: -2em;
+  --card-width: 220px;
+  --button-font-size: 0.75rem;
+}
+
+.container :global(.vtex-card) {
+  position: relative;
+  width: var(--card-width);
+  padding: 1rem;
+}
+
+.container :global(.vtex-tag) {
+  text-align: center;
+  width: 100%;
+  height: 2rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--button-font-size);
+  color: inherit;
+  text-transform: uppercase;
+}
+
+.container :global(.vtex-tag.bg-warning) {
+  background-color: #fff2d4;
+}
+
+.container :global(.vtex-tag.bg-success) {
+  background-color: #80be80;
+}
+
+.container :global(.vtex-tag.bg-danger) {
+  background-color: #e76850;
+  color: #fff;
+}
+
+.fistItemImage {
+  position: absolute;
+  right: 5px;
+  top: 20px;
+  width: 50px;
+  height: 50px;
+}
+
+.orderIdSection {
+  margin-right: calc(55px - 1rem);
+}
+
+.orderDataSectionValue {
+  text-overflow: ellipsis;
+  width: calc(var(--card-width) - 60px);
+}
+
+.container :global(.vtex-button),
+.container :global(.vtex-button__label) {
+  font-size: var(--button-font-size);
+  width: 100%;
+}
+
+.trigger {
+  width: 100%;
+  z-index: auto !important;
+}
+
+.popperArrow[data-popper-placement='top'] .arrow {
+  bottom: var(--arrow-placement);
+}
+
+.popperArrow[data-popper-placement='bottom'] .arrow {
+  top: var(--arrow-placement);
+}
+
+.popperArrow[data-popper-placement='right'] .arrow {
+  left: var(--arrow-placement);
+}
+
+.popperArrow[data-popper-placement='left'] .arrow {
+  right: var(--arrow-placement);
+}
+
+.orderDetails {
+  line-height: 1.2rem;
+}

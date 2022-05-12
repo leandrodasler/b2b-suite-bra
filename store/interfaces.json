@@ -1,0 +1,92 @@
+{
+  "sku-list": {
+    "component": "SkuList",
+    "allowed": ["sku-content.desktop", "sku-content.mobile"]
+  },
+  "sku-content": {
+    "component": "SkuContent",
+    "composition": "children",
+    "allowed": [
+      "flex-layout",
+      "sku-name",
+      "sku-seller",
+      "sku-image",
+      "sku-price",
+      "sku-inventory",
+      "sku-quantity-selector",
+      "sku-buy-button",
+      "sku-specifications",
+      "sku-highlights"
+    ]
+  },
+  "sku-content.desktop": {
+    "device": "desktop"
+  },
+  "sku-content.mobile": {
+    "device": "mobile"
+  },
+  "sku-name": {
+    "component": "SkuName"
+  },
+  "sku-price": {
+    "component": "SkuPrice"
+  },
+  "sku-inventory": {
+    "component": "SkuInventory"
+  },
+  "sku-image": {
+    "component": "SkuImage"
+  },
+  "sku-seller": {
+    "component": "SkuSeller",
+    "composition": "children",
+    "allowed": [
+      "flex-layout",
+      "seller-name",
+      "seller-inventory",
+      "seller-price"
+    ]
+  },
+  "seller-name": {
+    "component": "SellerName"
+  },
+  "seller-inventory": {
+    "component": "SellerInventory"
+  },
+  "seller-price": {
+    "component": "SellerPrice"
+  },
+  "item-quantity": {
+    "component": "ItemQuantity"
+  },
+  "sku-quantity-selector": {
+    "component": "SkuQuantitySelector",
+    "allowed": ["item-quantity"]
+  },
+  "item-buy-button": {
+    "component": "BuyButton"
+  },
+  "sku-buy-button": {
+    "component": "SkuBuyButton",
+    "allowed": ["item-buy-button"]
+  },
+  "add-all-to-cart-button": {
+    "component": "AddAllToCartButton"
+  },
+  "sku-specifications": {
+    "component": "SkuSpecifications"
+  },
+  "sku-highlights": {
+    "component": "SkuHighlights"
+  },
+  "b2b-context": {
+    "component": "B2BContext",
+    "composition": "children"
+  },
+  "b2b-last-orders": {
+    "component": "B2BLastOrders"
+  },
+  "b2b-representative-area": {
+    "component": "B2BRepresentativeArea"
+  }
+}

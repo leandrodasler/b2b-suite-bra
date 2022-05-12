@@ -1,0 +1,9 @@
+.title {
+  font-size: 22px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+}
+
+.data {
+  font-size: 18px;
+}
