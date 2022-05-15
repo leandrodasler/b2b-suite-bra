@@ -215,7 +215,8 @@ const AddToCartButton: FC<Props & InjectedIntlProps> = ({
       block
       disabled={disabled || !available || loading || mutationLoading}
       isLoading={mutationLoading}
-      onClick={handleClick}>
+      onClick={handleClick}
+    >
       {available ? availableButtonContent : unavailableButtonContent}
     </Button>
   ) : (
@@ -224,7 +225,8 @@ const AddToCartButton: FC<Props & InjectedIntlProps> = ({
         block
         disabled={disabled || !available || loading || mutationLoading}
         isLoading={mutationLoading}
-        onClick={handleClick}>
+        onClick={handleClick}
+      >
         {available ? availableButtonContent : unavailableButtonContent}
       </Button>
     </Tooltip>

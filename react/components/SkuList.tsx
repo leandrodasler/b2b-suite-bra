@@ -1,8 +1,9 @@
 import { path, pathOr } from 'ramda'
-import React, { FunctionComponent, useContext } from 'react'
+import React, { FunctionComponent, useContext, useEffect } from 'react'
 import { ProductContext } from 'vtex.product-context'
 import { ExtensionPoint } from 'vtex.render-runtime'
 import { useDevice } from 'vtex.device-detector'
+
 import { Item, Product } from '../typings'
 
 enum Device {
@@ -50,6 +51,16 @@ SkuListComponent.displayName = 'SkuListComponent'
 
 const SkuList: FunctionComponent = () => {
   const { isMobile } = useDevice()
+
+  useEffect(() => {
+    document
+      .querySelectorAll(
+        '.vtex-numeric-stepper__plus-button, .vtex-numeric-stepper__minus-button'
+      )
+      .forEach(element => {
+        element.setAttribute('tabindex', '-1')
+      })
+  }, [])
 
   return <SkuListComponent device={isMobile ? Device.mobile : Device.desktop} />
 }

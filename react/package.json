@@ -36,7 +36,7 @@
     "eslint-config-vtex-react": "^5.0.1",
     "prettier": "^1.18.2",
     "prop-types": "^15.7.2",
-    "ssesandbox04.b2b-suite-bra": "https://tiago--bravtexfashionb2b.myvtex.com/_v/private/typings/linked/v1/ssesandbox04.b2b-suite-bra@0.0.0+build1652319334/public/@types/ssesandbox04.b2b-suite-bra",
+    "ssesandbox04.b2b-suite-bra": "https://tiago--bravtexfashionb2b.myvtex.com/_v/private/typings/linked/v1/ssesandbox04.b2b-suite-bra@0.0.1+build1652623345/public/@types/ssesandbox04.b2b-suite-bra",
     "typescript": "3.9.7",
     "vtex.apps-graphql": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.apps-graphql@2.8.0/public/@types/vtex.apps-graphql",
     "vtex.checkout-resources": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.checkout-resources@0.48.1/public/@types/vtex.checkout-resources",
