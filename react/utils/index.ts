@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+
 /* eslint-disable @typescript-eslint/prefer-interface */
 export type LastOrdersProps = {
   limit: number
@@ -29,12 +31,26 @@ export type Order = {
   }[]
 }
 
+export const ROLE_MAP = {
+  'store-admin': 'Administrador da Loja',
+  'sales-admin': 'Administrador de Vendas',
+  'sales-manager': 'Gerente de Vendas',
+  'sales-representative': 'Representante de Vendas',
+  'customer-admin': 'Administrador da Organização',
+  'customer-approver': 'Aprovador da Organização',
+  'customer-buyer': 'Comprador da Organização',
+  default: '---',
+}
+
 export type User = {
   id: { value?: string }
   firstName?: { value?: string }
   lastName?: { value?: string }
   email?: { value?: string }
   organization?: string
+  b2bUserId?: string
+  costCenterName?: string
+  role?: keyof typeof ROLE_MAP
   lastOrderId?: string
 }
 
@@ -56,13 +72,13 @@ export const getOrders = async (limit: number): Promise<Order[]> => {
   const orders: Order[] = (await ordersResponse.json())?.list
 
   const ordersDetailsResponse = await Promise.all(
-    orders.map((order) =>
+    orders.map(order =>
       fetch(`/b2b/oms/user/orders/${order.orderId}`, commonFetchOptions)
     )
   )
 
   const ordersDetails: Order[] = await Promise.all(
-    ordersDetailsResponse.map((response) => response.json())
+    ordersDetailsResponse.map(response => response.json())
   )
 
   return ordersDetails?.length === orders?.length
@@ -127,7 +143,7 @@ export type OrderStatusType = keyof typeof ORDER_STATUS_BACKGROUND_MAP
 export const getOrderStatusTypeTag = (status: OrderStatusType): string =>
   ORDER_STATUS_BACKGROUND_MAP[status] || 'warning'
 
-export const getUser = async (): Promise<User> => {
+export async function getUser(): Promise<User> {
   const sessionResponse = await fetch(
     '/api/sessions?items=*',
     commonFetchOptions
@@ -135,13 +151,58 @@ export const getUser = async (): Promise<User> => {
 
   const session = await sessionResponse.json()
 
-  const organizationId =
+  const organization =
     session?.namespaces['storefront-permissions']?.organization?.value
+
+  const b2bUserId = session?.namespaces['storefront-permissions']?.userId?.value
 
   return {
     ...session?.namespaces?.profile,
-    organization: organizationId,
+    organization,
+    b2bUserId,
   }
+}
+
+export const useSessionUser = (): {
+  user: User | undefined
+  setUser: Dispatch<SetStateAction<User | undefined>>
+  loading: boolean
+} => {
+  const [user, setUser] = useState<User>()
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    setLoading(true)
+    getUser().then(recoveredUser => {
+      setUser(recoveredUser)
+      setLoading(false)
+    })
+  }, [])
+
+  return { user, setUser, loading }
+}
+
+// atribui valores na session que irão disparar o session transformer implementado
+// em node/index.tsx na rota switchProfile
+export async function setOrganizationUserSession(
+  userId: string | undefined,
+  organization: string | undefined,
+  costCenter: string | undefined
+) {
+  const response = await fetch('/api/sessions', {
+    ...commonFetchOptions,
+    body: JSON.stringify({
+      public: {
+        userId: { value: userId },
+        organization: { value: organization },
+        costcenter: { value: costCenter },
+      },
+    }),
+    method: 'POST',
+    credentials: 'same-origin',
+  })
+
+  return response.json()
 }
 
 export const getRemainingDaysInMonth = () => {

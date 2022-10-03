@@ -1,0 +1,10 @@
+{
+  "b2b-suite-bra": {
+    "input": {
+      "public": ["organization", "costcenter", "userId"]
+    },
+    "output": {
+      "storefront-permissions": ["organization", "costcenter", "userId"]
+    }
+  }
+}

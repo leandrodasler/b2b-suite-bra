@@ -1,0 +1,13 @@
+query getUser($id: ID!) {
+  getUser(id: $id) @context(provider: "vtex.storefron-permissions") {
+    id
+    roleId
+    userId
+    clId
+    orgId
+    costId
+    name
+    email
+    canImpersonate
+  }
+}
