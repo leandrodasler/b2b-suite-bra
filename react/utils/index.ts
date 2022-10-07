@@ -1,20 +1,19 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
-/* eslint-disable @typescript-eslint/prefer-interface */
-export type LastOrdersProps = {
+export interface LastOrdersProps {
   limit: number
   orderDetailsPlacement: string
   orderDetailsPrimaryColor: string
 }
 
-export type RepresentativeAreaProps = {
+export interface RepresentativeAreaProps {
   individualGoal: number
   reachedValue: number
   customersPortfolio: number
   customersOrdersMonth: number
 }
 
-export type Order = {
+export interface Order {
   orderId: string
   creationDate: string
   clientName: string
@@ -42,16 +41,14 @@ export const ROLE_MAP = {
   default: '---',
 }
 
-export type User = {
+export interface User {
   id: { value?: string }
   firstName?: { value?: string }
   lastName?: { value?: string }
   email?: { value?: string }
-  organization?: string
   b2bUserId?: string
   costCenterName?: string
   role?: keyof typeof ROLE_MAP
-  lastOrderId?: string
 }
 
 export const commonFetchOptions: RequestInit = {
@@ -68,8 +65,7 @@ export const getOrders = async (limit: number): Promise<Order[]> => {
     commonFetchOptions
   )
 
-  // eslint-disable-next-line prettier/prettier
-  const orders: Order[] = (await ordersResponse.json())?.list
+  const orders: Order[] = (await ordersResponse.json())?.list || []
 
   const ordersDetailsResponse = await Promise.all(
     orders.map(order =>
@@ -151,14 +147,10 @@ export async function getUser(): Promise<User> {
 
   const session = await sessionResponse.json()
 
-  const organization =
-    session?.namespaces['storefront-permissions']?.organization?.value
-
   const b2bUserId = session?.namespaces['storefront-permissions']?.userId?.value
 
   return {
     ...session?.namespaces?.profile,
-    organization,
     b2bUserId,
   }
 }
@@ -185,9 +177,9 @@ export const useSessionUser = (): {
 // atribui valores na session que irão disparar o session transformer implementado
 // em node/index.tsx na rota switchProfile
 export async function setOrganizationUserSession(
-  userId: string | undefined,
-  organization: string | undefined,
-  costCenter: string | undefined
+  userId?: string,
+  organization?: string,
+  costCenter?: string
 ) {
   const response = await fetch('/api/sessions', {
     ...commonFetchOptions,
@@ -202,7 +194,7 @@ export async function setOrganizationUserSession(
     credentials: 'same-origin',
   })
 
-  return response.json()
+  return response
 }
 
 export const getRemainingDaysInMonth = () => {
