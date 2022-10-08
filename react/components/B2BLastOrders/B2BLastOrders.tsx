@@ -12,7 +12,7 @@ import {
   LastOrdersProps,
   Order,
 } from '../../utils'
-import './index.css'
+import './styles.css'
 
 // eslint-disable-next-line
 const userIcon = require('./user-icon.svg') as string

@@ -47,8 +47,6 @@ export interface User {
   lastName?: { value?: string }
   email?: { value?: string }
   b2bUserId?: string
-  costCenterName?: string
-  role?: keyof typeof ROLE_MAP
 }
 
 export const commonFetchOptions: RequestInit = {

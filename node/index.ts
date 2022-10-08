@@ -34,10 +34,18 @@ export default new Service({
     }),
     switchProfile: method({
       POST: async (ctx: ServiceContext) => {
-        const { req, response } = ctx
+        const {
+          req,
+          response,
+          vtex: { logger },
+        } = ctx
         const body = await json(req)
+        const logMessage = `switch profile to ${body}`
 
-        console.log('switch profile to: ', body)
+        console.log(logMessage)
+        logger.info({
+          message: logMessage,
+        })
 
         ctx.set('Content-Type', 'application/json')
         ctx.set('Cache-Control', 'no-cache, no-store')

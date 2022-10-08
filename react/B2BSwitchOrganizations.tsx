@@ -1,2 +1,2 @@
-import B2BSwitchOrganizations from './components/B2BSwitchOrganizations'
+import B2BSwitchOrganizations from './components/B2BSwitchOrganizations/B2BSwitchOrganizations'
 export default B2BSwitchOrganizations

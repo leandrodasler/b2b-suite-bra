@@ -5,7 +5,7 @@ import { Spinner } from 'vtex.styleguide'
 
 import { B2BContext } from '../../context/B2BContext'
 import { getUser, RepresentativeAreaProps, User } from '../../utils'
-import './index.css'
+import './styles.css'
 
 const CSS_HANDLES = ['title', 'data', 'description', 'value']
 

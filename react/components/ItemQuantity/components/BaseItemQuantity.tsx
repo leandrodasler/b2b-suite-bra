@@ -1,9 +1,10 @@
-import React, { useCallback } from 'react'
-import { Input, NumericStepper } from 'vtex.styleguide'
-import { FormattedMessage } from 'react-intl'
 import { pathOr } from 'ramda'
+import React, { useCallback } from 'react'
+import { FormattedMessage } from 'react-intl'
 import { useCssHandles } from 'vtex.css-handles'
+import { Input } from 'vtex.styleguide'
 import { Item } from '../../../typings'
+import NumericStepper from '../../NumericStepper/NumericStepper'
 
 const CSS_HANDLES = [
   'quantitySelectorContainer',
@@ -43,10 +44,12 @@ const BaseItemQuantity: StorefrontFunctionComponent<Props> = ({
 
   return (
     <div
-      className={`${handles.quantitySelectorContainer} flex flex-column mb4`}>
+      className={`${handles.quantitySelectorContainer} flex flex-column mb4`}
+    >
       {showLabel && (
         <div
-          className={`${handles.quantitySelectorTitle} mb3 t-body c-on-base fw7 pr3`}>
+          className={`${handles.quantitySelectorTitle} mb3 t-body c-on-base fw7 pr3`}
+        >
           <FormattedMessage id="store/product-quantity.quantity" />
         </div>
       )}
@@ -64,14 +67,15 @@ const BaseItemQuantity: StorefrontFunctionComponent<Props> = ({
             size="small"
             value={selectedQuantity}
             minValue={0}
-            maxValue={availableQuantity ? availableQuantity : undefined}
+            maxValue={availableQuantity ? availableQuantity : Infinity}
             onChange={onChange}
           />
         )}
       </div>
       {showAvailable && (
         <div
-          className={`${handles.availableQuantityContainer} mv4 c-muted-2 t-small`}>
+          className={`${handles.availableQuantityContainer} mv4 c-muted-2 t-small`}
+        >
           <FormattedMessage
             id="store/product-quantity.quantity-available"
             values={{ availableQuantity }}

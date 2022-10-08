@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+- Load components refactor.
+- Custom numeric stepper without prevent default click event
+
 ## [0.0.5] - 2022-10-07
 
 ### Added
