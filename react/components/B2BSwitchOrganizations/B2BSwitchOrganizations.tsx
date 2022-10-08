@@ -10,6 +10,8 @@ import {
   useSessionUser,
 } from '../../utils'
 
+const TIMEOUT_RETRY_SET_SESSION = 500
+
 interface B2BOrganizationUser {
   id: string
   organizationName: string
@@ -61,21 +63,20 @@ function B2BSwitchOrganizations() {
     )
 
     setSelectedOrganizationUser(selected?.id)
-    setOrganizationUserSession(
-      selected?.id,
-      selected?.orgId,
-      selected?.costId
-    ).then(response => {
+
+    const retrySetSessionInterval = window.setInterval(async () => {
+      const response = await setOrganizationUserSession(
+        selected?.id,
+        selected?.orgId,
+        selected?.costId
+      )
+
       if (response.status === 200) {
+        window.clearInterval(retrySetSessionInterval)
         window.location.reload()
-      } else {
-        window.alert(
-          `Erro ao selecionar perfil: ${
-            response.status
-          } - ${response.statusText || 'sem mensagem'}`
-        )
+        return
       }
-    })
+    }, TIMEOUT_RETRY_SET_SESSION)
   }
 
   return (

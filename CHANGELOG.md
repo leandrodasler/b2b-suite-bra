@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- Fault tolerance in session transformer call with retry.
+
 ## [0.0.8] - 2022-10-08
 
 ## [0.0.7] - 2022-10-08
@@ -15,7 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Load components refactor.
-- Custom numeric stepper without prevent default click event
+- Custom numeric stepper without prevent default click event.
 
 ## [0.0.5] - 2022-10-07
 
