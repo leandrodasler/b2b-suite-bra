@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.0.10] - 2022-10-08
+
 ### Added
 - Fault tolerance in session transformer call with retry.
 
