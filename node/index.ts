@@ -40,7 +40,7 @@ export default new Service({
           vtex: { logger },
         } = ctx
         const body = await json(req)
-        const logMessage = `switch profile to ${body}`
+        const logMessage = `switch profile to: ${JSON.stringify(body)}`
 
         console.log(logMessage)
         logger.info({
