@@ -1,4 +1,5 @@
 import React, { createContext, FC, useState } from 'react'
+import { useIntl } from 'react-intl'
 import { Link } from 'vtex.styleguide'
 
 import { getRemainingDaysInMonth } from '../utils'
@@ -46,6 +47,27 @@ export const B2BContext = createContext<B2BContextType>({
 })
 
 const B2BContextProvider: FC = ({ children }) => {
+  const intl = useIntl()
+
+  defaultData.individualGoal.description = intl.formatMessage({
+    id: 'store/representative-area.individualGoal',
+  })
+  defaultData.reachedValue.description = intl.formatMessage({
+    id: 'store/representative-area.reachedValue',
+  })
+  defaultData.customersPortfolio.description = intl.formatMessage({
+    id: 'store/representative-area.customersPortfolio',
+  })
+  defaultData.customersOrdersMonth.description = intl.formatMessage({
+    id: 'store/representative-area.customersOrdersMonth',
+  })
+  defaultData.remainingDaysInMonth.description = intl.formatMessage({
+    id: 'store/representative-area.remainingDaysInMonth',
+  })
+  defaultData.lastOrder.description = intl.formatMessage({
+    id: 'store/representative-area.lastOrder',
+  })
+
   const [data, setData] = useState<typeof defaultData>(defaultData)
 
   return (

@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import React, { useEffect } from 'react'
+import { FormattedMessage } from 'react-intl'
 import { useCssHandles } from 'vtex.css-handles'
 import { OverlayLayout, OverlayTrigger } from 'vtex.overlay-layout'
 import { Button, Card, Link, Spinner, Tag } from 'vtex.styleguide'
@@ -11,6 +12,7 @@ import {
   getOrderStatusTypeTag,
   LastOrdersProps,
   Order,
+  useFormattedStatus,
 } from '../../utils'
 import './styles.css'
 
@@ -39,6 +41,7 @@ function B2BLastOrders({
   const [loading, setLoading] = React.useState(true)
   const { data, setData } = React.useContext(B2BContext)
   const handles = useCssHandles(CSS_HANDLES)
+  const formatStatus = useFormattedStatus()
 
   useEffect(() => {
     setLoading(true)
@@ -63,7 +66,7 @@ function B2BLastOrders({
         setLoading(false)
       })
       .catch(e => {
-        console.log('Erro ao recuperar pedidos da organização: ', e)
+        console.error('Error retrieving orders from organization: ', e)
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [limit, setData])
@@ -73,7 +76,9 @@ function B2BLastOrders({
       {loading ? (
         <Spinner />
       ) : orders.length === 0 ? (
-        <Card>Nenhum pedido para exibir</Card>
+        <Card>
+          <FormattedMessage id="store/last-orders.noOrder" />
+        </Card>
       ) : (
         orders.map(order => {
           const firstItemImageUrl = order.items[0]?.imageUrl
@@ -116,7 +121,9 @@ function B2BLastOrders({
                   />
                 )}
                 <section className={`mv4 ${handles.orderIdSection}`}>
-                  <span className="dark-gray nowrap">Pedido nº:</span>
+                  <span className="dark-gray nowrap">
+                    <FormattedMessage id="store/last-orders.orderNumber" />:
+                  </span>
                   <br />
                   {order.orderId}
                 </section>
@@ -126,10 +133,12 @@ function B2BLastOrders({
                     width={20}
                     height={20}
                     src={userIcon}
-                    alt="Ícone de Usuário"
+                    alt="User icon"
                   />
                   <section className="flex flex-wrap items-center ma0">
-                    <span className="dark-gray mb1 w-100">Feito por:</span>
+                    <span className="dark-gray mb1 w-100">
+                      <FormattedMessage id="store/last-orders.orderMadeBy" />:
+                    </span>
                     <span
                       className={`w-100 overflow-hidden nowrap ${handles.orderDataSectionValue}`}
                       title={order.clientName}
@@ -144,10 +153,12 @@ function B2BLastOrders({
                     width={20}
                     height={20}
                     src={calendarIcon}
-                    alt="Ícone de Calendário"
+                    alt="Calendar icon"
                   />
                   <section className="flex flex-wrap items-center ma0">
-                    <span className="dark-gray mb1 w-100">Data:</span>
+                    <span className="dark-gray mb1 w-100">
+                      <FormattedMessage id="store/last-orders.date" />:
+                    </span>
                     <span
                       className={`w-100 overflow-hidden nowrap ${handles.orderDataSectionValue}`}
                       title={orderCreationDate}
@@ -158,13 +169,13 @@ function B2BLastOrders({
                 </section>
                 <section className="flex justify-center ma0">
                   <Tag type={getOrderStatusTypeTag(order.status)}>
-                    {order.statusDescription}
+                    {formatStatus(order.status)}
                   </Tag>
                 </section>
                 <section className="flex justify-center ma2">
                   <OverlayTrigger trigger="hover">
                     <Button variation="tertiary" href={orderDetailsUrl}>
-                      Mais detalhes
+                      <FormattedMessage id="store/last-orders.moreDetails" />
                     </Button>
                     <OverlayLayout showArrow placement={orderDetailsPlacement}>
                       {orderDetails}
@@ -175,7 +186,7 @@ function B2BLastOrders({
                   <Button
                     onClick={() => (window.location.href = orderAgainUrl)}
                   >
-                    Pedir novamente
+                    <FormattedMessage id="store/last-orders.orderAgain" />
                   </Button>
                 </section>
               </article>
@@ -193,12 +204,12 @@ B2BLastOrders.schema = {
   properties: {
     limit: {
       type: 'number',
-      title: 'Quantidade máxima de pedidos exibidos pelo componente',
+      title: 'Maximum number of orders displayed by the component',
       default: DEFAULT_LIMIT,
     },
     orderDetailsPlacement: {
       type: 'string',
-      title: 'Posicionamento da caixa suspensa de detalhes do pedido',
+      title: 'Order details dropdown box placement',
       enum: ['right', 'left', 'top', 'bottom'],
       default: DEFAULT_PLACEMENT,
     },

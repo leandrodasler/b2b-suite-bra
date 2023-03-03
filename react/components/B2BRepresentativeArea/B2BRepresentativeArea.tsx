@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { FormattedMessage } from 'react-intl'
 import { useCssHandles } from 'vtex.css-handles'
 import { FormattedCurrency } from 'vtex.format-currency'
 import { Spinner } from 'vtex.styleguide'
@@ -58,7 +59,7 @@ function B2BRepresentativeArea(
   return (
     <>
       <h4 className={`t-heading-4 mt0 pb3 mb3 b--black-10 ${handles.title}`}>
-        Área do representante:{' '}
+        <FormattedMessage id="store/representative-area.title" />:{' '}
         {/* eslint-disable-next-line prettier/prettier */}
         <span className="b">{`${user?.firstName?.value} ${user?.lastName?.value}`}</span>
       </h4>
@@ -109,22 +110,22 @@ B2BRepresentativeArea.schema = {
   properties: {
     individualGoal: {
       type: 'number',
-      title: 'Meta individual',
+      title: 'Individual goal',
       default: 0,
     },
     reachedValue: {
       type: 'number',
-      title: 'Valor atingido',
+      title: 'Reached value',
       default: 0,
     },
     customersPortfolio: {
       type: 'number',
-      title: 'Número de clientes na carteira',
+      title: 'Number of customers in portfolio',
       default: 0,
     },
     customersOrdersMonth: {
       type: 'number',
-      title: 'Número de pedidos no mês',
+      title: 'Number of customers that ordered this month',
       default: 0,
     },
   },

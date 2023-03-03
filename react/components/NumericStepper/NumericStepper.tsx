@@ -385,7 +385,7 @@ class NumericStepper extends Component<NumericStepperProps> {
               }}
               disabled={readOnly || isMax}
               aria-label="+"
-              tabIndex={0}
+              tabIndex={-1}
               onClick={this.handleIncreaseValue}
             >
               <div className="vtex-numeric-stepper__plus-button__text numeric-stepper__plus-button__text b">
@@ -411,7 +411,7 @@ class NumericStepper extends Component<NumericStepperProps> {
               // This is a minus sign (U+2212), not a regular hyphen (-, U+002D),
               // which is the default keyboard character.
               // Used for screen readers.
-              tabIndex={0}
+              tabIndex={-1}
               onClick={this.handleDecreaseValue}
             >
               <span className="vtex-numeric-stepper__minus-button__text numeric-stepper__minus-button__text b">

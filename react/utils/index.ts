@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
+import { useIntl } from 'react-intl'
 
 export interface LastOrdersProps {
   limit: number
@@ -85,24 +86,15 @@ export const getOrders = async (limit: number): Promise<Order[]> => {
 
 export const formatDate = (date: string): string => {
   const dateObject = new Date(date)
-  const day = new Intl.DateTimeFormat('pt-BR', { day: '2-digit' }).format(
-    dateObject
-  )
-
-  const month = new Intl.DateTimeFormat('pt-BR', { month: '2-digit' }).format(
-    dateObject
-  )
-
-  const year = dateObject.getFullYear()
-  const hour = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit' }).format(
-    dateObject
-  )
-
-  const minutes = new Intl.DateTimeFormat('pt-BR', {
-    minute: '2-digit',
+  const language =
+    document.getElementsByTagName('html')[0].getAttribute('lang') || 'pt-BR'
+  const formattedDate = new Intl.DateTimeFormat(language).format(dateObject)
+  const formattedHour = new Intl.DateTimeFormat(language, {
+    hour: 'numeric',
+    minute: 'numeric',
   }).format(dateObject)
 
-  return `${day}/${month}/${year} às ${hour}:${minutes}`
+  return `${formattedDate} - ${formattedHour}`
 }
 
 const ORDER_STATUS_BACKGROUND_MAP = {
@@ -125,7 +117,7 @@ const ORDER_STATUS_BACKGROUND_MAP = {
   invoice: 'warning',
   invoiced: 'success',
   'ready-for-handling': 'success',
-  'start-handling*': 'success',
+  'start-handling': 'success',
   'cancellation-requested': 'error',
   handling: 'warning',
   'waiting-for-mkt-authorization': 'warning',
@@ -200,4 +192,19 @@ export const getRemainingDaysInMonth = () => {
   const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)
 
   return lastDay.getDate() - today.getDate()
+}
+
+export const useFormattedStatus = () => {
+  const intl = useIntl()
+
+  const formatStatus = useMemo(
+    () => (status: OrderStatusType) =>
+      intl.formatMessage({
+        id: `store/order-status.${status}`,
+        defaultMessage: status,
+      }),
+    [intl]
+  )
+
+  return formatStatus
 }
