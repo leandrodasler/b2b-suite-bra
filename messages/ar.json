@@ -22,6 +22,7 @@
   "store/representative-area.customersPortfolio": "Customers in portfolio",
   "store/representative-area.customersOrdersMonth": "Number of customers that ordered this month",
   "store/representative-area.remainingDaysInMonth": "Remaining days in month",
+  "store/representative-area.lastOrderLoading": "loading...",
   "store/representative-area.lastOrder": "Last order",
 
   "store/last-orders.noOrder": "No order to display",

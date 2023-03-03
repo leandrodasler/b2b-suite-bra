@@ -67,6 +67,9 @@ const B2BContextProvider: FC = ({ children }) => {
   defaultData.lastOrder.description = intl.formatMessage({
     id: 'store/representative-area.lastOrder',
   })
+  defaultData.lastOrder.value = intl.formatMessage({
+    id: 'store/representative-area.lastOrderLoading',
+  })
 
   const [data, setData] = useState<typeof defaultData>(defaultData)
 

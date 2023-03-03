@@ -22,6 +22,7 @@
   "store/representative-area.customersPortfolio": "Nº de clientes na carteira",
   "store/representative-area.customersOrdersMonth": "Nº de clientes que fizeram pedido este mês",
   "store/representative-area.remainingDaysInMonth": "Dias remanescentes no mês",
+  "store/representative-area.lastOrderLoading": "carregando...",
   "store/representative-area.lastOrder": "Último pedido",
 
   "store/last-orders.noOrder": "Nenhum pedido para exibir",
