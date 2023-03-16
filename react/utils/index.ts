@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
+
+import { B2BContextProps } from '../context/B2BContext'
 
 export interface LastOrdersProps {
   limit: number
@@ -22,6 +25,7 @@ export interface Order {
   statusDescription: string
   salesChannel: string
   totalItems: number
+  paymentApprovedDate?: Date
   items: {
     id: string
     seller: string
@@ -29,6 +33,7 @@ export interface Order {
     name: string
     quantity: number
   }[]
+  totalValue: number
 }
 
 export const ROLE_MAP = {
@@ -48,6 +53,8 @@ export interface User {
   lastName?: { value?: string }
   email?: { value?: string }
   b2bUserId?: string
+  organization?: string
+  costCenter?: string
 }
 
 export const commonFetchOptions: RequestInit = {
@@ -84,10 +91,119 @@ export const getOrders = async (limit: number): Promise<Order[]> => {
     : orders
 }
 
+const getFirstDay = () => {
+  const now = new Date()
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0)
+  return firstDay.toISOString()
+}
+
+const getLastDay = () => {
+  const now = new Date()
+  const lastDay = new Date(
+    now.getFullYear(),
+    now.getMonth() + 1,
+    0,
+    23,
+    59,
+    59,
+    999
+  )
+  return lastDay.toISOString()
+}
+
+const getDistintClientAmount = (orders: Order[]) => {
+  const distinctClients = orders.reduce(
+    (clients: Record<string, number>, order) => {
+      if (order.clientName in clients) {
+        clients[order.clientName]++
+      } else {
+        clients[order.clientName] = 1
+      }
+      return clients
+    },
+    {}
+  )
+
+  return Object.keys(distinctClients).length
+}
+
+export const getMonthlyOrders = async (): Promise<{
+  totalValue: number
+  monthlyOrdersDistinctClientAmount: number
+  allOrdersDistinctClientAmount: number
+}> => {
+  const omsPvtOrdersResponse = await fetch(
+    `/api/oms/pvt/orders/?creationDate,desc&f_creationDate=creationDate:[${getFirstDay()} TO ${getLastDay()}]&page=1&per_page=99999`,
+    commonFetchOptions
+  )
+
+  const omsPvtOrders: Order[] = (await omsPvtOrdersResponse.json())?.list || []
+
+  const allOrdersResponse = await fetch(
+    `/b2b/oms/user/orders/?page=1&per_page=99999`,
+    commonFetchOptions
+  )
+  const allOrders: Order[] = (await allOrdersResponse.json())?.list || []
+  const allOrdersDistinctClientAmount = getDistintClientAmount(allOrders)
+
+  // eslint-disable-next-line no-console
+  console.log('Nº de clientes na carteira:', allOrdersDistinctClientAmount)
+
+  // eslint-disable-next-line no-console
+  console.log('All orders:', allOrders)
+
+  const monthlyOrders = allOrders.filter(order =>
+    omsPvtOrders.find(omsPvtOrder => omsPvtOrder.orderId === order.orderId)
+  )
+
+  // eslint-disable-next-line no-console
+  console.log('Orders do mês: ', monthlyOrders)
+
+  const totalValue = monthlyOrders
+    .filter(order => order.paymentApprovedDate)
+    .map(order => order.totalValue)
+    .reduce((a: number, b: number) => a + b, 0)
+
+  const monthlyOrdersDistinctClientAmount = getDistintClientAmount(
+    monthlyOrders
+  )
+  // eslint-disable-next-line no-console
+  console.log(
+    'Nº de clientes que fizeram pedido este mês:',
+    monthlyOrdersDistinctClientAmount
+  )
+
+  return {
+    totalValue,
+    monthlyOrdersDistinctClientAmount,
+    allOrdersDistinctClientAmount,
+  }
+}
+
+const getLocale = () =>
+  document.getElementsByTagName('html')[0].getAttribute('lang') || 'pt-BR'
+
+const getPercent = (current: number, total: number) => (current / total) * 100
+
+export const getPercentReachedValue = (data: B2BContextProps) =>
+  getPercent(+data.reachedValue.value, +data.individualGoal.value ?? 1)
+
+export const getPercentReachedValueInteger = (data: B2BContextProps) =>
+  Math.floor(getPercentReachedValue(data))
+
+export const getPercentReachedValueFormatted = (data: B2BContextProps) => {
+  const percentage = getPercentReachedValue(data)
+  const locale = getLocale()
+  return (percentage / 100).toLocaleString(locale, {
+    style: 'percent',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+}
+
 export const formatDate = (date: string): string => {
   const dateObject = new Date(date)
-  const language =
-    document.getElementsByTagName('html')[0].getAttribute('lang') || 'pt-BR'
+  const language = getLocale()
   const formattedDate = new Intl.DateTimeFormat(language).format(dateObject)
   const formattedHour = new Intl.DateTimeFormat(language, {
     hour: 'numeric',
@@ -138,10 +254,16 @@ export async function getUser(): Promise<User> {
   const session = await sessionResponse.json()
 
   const b2bUserId = session?.namespaces['storefront-permissions']?.userId?.value
+  const organization =
+    session?.namespaces['storefront-permissions']?.organization?.value
+  const costCenter =
+    session?.namespaces['storefront-permissions']?.costcenter?.value
 
   return {
     ...session?.namespaces?.profile,
     b2bUserId,
+    organization,
+    costCenter,
   }
 }
 

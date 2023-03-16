@@ -1,11 +1,18 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useCssHandles } from 'vtex.css-handles'
 import { FormattedCurrency } from 'vtex.format-currency'
-import { Spinner } from 'vtex.styleguide'
+import { Progress, Spinner } from 'vtex.styleguide'
 
-import { B2BContext } from '../../context/B2BContext'
-import { getUser, RepresentativeAreaProps, User } from '../../utils'
+import { B2BContext, B2BContextProps } from '../../context/B2BContext'
+import {
+  getMonthlyOrders,
+  getPercentReachedValue,
+  getPercentReachedValueFormatted,
+  getUser,
+  RepresentativeAreaProps,
+  User,
+} from '../../utils'
 import './styles.css'
 
 const CSS_HANDLES = ['title', 'data', 'description', 'value']
@@ -22,37 +29,62 @@ function B2BRepresentativeArea(
   const [loading, setLoading] = React.useState(true)
   const { data, setData } = React.useContext(B2BContext)
   const handles = useCssHandles(CSS_HANDLES)
+  const [monthlyOrders, setMonthlyOrders] = React.useState<{
+    totalValue: number
+    monthlyOrdersDistinctClientAmount: number
+    allOrdersDistinctClientAmount: number
+  }>({
+    totalValue: 0,
+    monthlyOrdersDistinctClientAmount: 0,
+    allOrdersDistinctClientAmount: 0,
+  })
 
   useEffect(() => {
     setLoading(true)
     getUser().then(recoveredUser => {
       setUser(recoveredUser)
-      setLoading(false)
+      recoveredUser.organization &&
+        recoveredUser.costCenter &&
+        getMonthlyOrders().then(orders => {
+          setMonthlyOrders(orders)
+          setLoading(false)
+        })
     })
   }, [])
 
   useEffect(() => {
-    setData((prevData: typeof data) => ({
+    setData((prevData: B2BContextProps) => ({
       ...prevData,
       individualGoal: {
         description: prevData.individualGoal.description,
-        value: props.individualGoal,
+        value:
+          user?.organization === '47da0c2b-a4a5-11ec-835d-02bbf463c079'
+            ? 40000
+            : user?.organization === 'df6965b9-a499-11ec-835d-0aa8762320bd'
+            ? 35000
+            : user?.organization === '4b3635cf-b937-11ed-83ab-02032078fba7'
+            ? 30000
+            : user?.organization === '0d3ea49a-c1e6-11ed-83ab-12e19e79322b'
+            ? 25000
+            : props.individualGoal,
       },
       reachedValue: {
         description: prevData.reachedValue.description,
-        value: props.reachedValue,
+        value: monthlyOrders?.totalValue / 100,
       },
       customersPortfolio: {
         description: prevData.customersPortfolio.description,
-        value: props.customersPortfolio,
+        value: monthlyOrders?.allOrdersDistinctClientAmount,
       },
       customersOrdersMonth: {
         description: prevData.customersOrdersMonth.description,
-        value: props.customersOrdersMonth,
+        value: monthlyOrders?.monthlyOrdersDistinctClientAmount,
       },
     }))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props, setData])
+  }, [props, setData, monthlyOrders, user])
+
+  const percent = useCallback(getPercentReachedValue, [data])
+  const percentFormatted = useCallback(getPercentReachedValueFormatted, [data])
 
   if (loading) return <Spinner />
 
@@ -60,8 +92,9 @@ function B2BRepresentativeArea(
     <>
       <h4 className={`t-heading-4 mt0 pb3 mb3 b--black-10 ${handles.title}`}>
         <FormattedMessage id="store/representative-area.title" />:{' '}
-        {/* eslint-disable-next-line prettier/prettier */}
-        <span className="b">{`${user?.firstName?.value} ${user?.lastName?.value}`}</span>
+        <span className="b">
+          {`${user?.firstName?.value} ${user?.lastName?.value}`}
+        </span>
       </h4>
       <div className="flex flex-wrap items-baseline">
         {Object.keys(data).map((key, index) => (
@@ -86,13 +119,13 @@ function B2BRepresentativeArea(
                 />
               )}
 
-              {key === 'reachedValue' &&
-                data.individualGoal.value !== 0 &&
-                ` (${Math.floor(
-                  (+data.reachedValue.value /
-                    (+data.individualGoal.value ?? 1)) *
-                    100
-                )}%)`}
+              {key === 'reachedValue' && (
+                <>
+                  {data.individualGoal.value !== 0 &&
+                    ` (${percentFormatted(data)})`}
+                  <Progress percent={percent(data)} type="line" />
+                </>
+              )}
 
               {!['individualGoal', 'reachedValue'].includes(key) &&
                 (data[key as keyof typeof data].value ?? '---')}

@@ -9,7 +9,16 @@ interface KeyData {
   value: string | number | typeof Link
 }
 
-export const defaultData: { [key: string]: KeyData } = {
+export interface B2BContextProps {
+  individualGoal: KeyData
+  customersPortfolio: KeyData
+  remainingDaysInMonth: KeyData
+  reachedValue: KeyData
+  customersOrdersMonth: KeyData
+  lastOrder: KeyData
+}
+
+export const defaultData: B2BContextProps = {
   individualGoal: {
     description: 'Meta individual',
     value: 0,
@@ -37,8 +46,8 @@ export const defaultData: { [key: string]: KeyData } = {
 }
 
 interface B2BContextType {
-  data: typeof defaultData
-  setData: React.Dispatch<React.SetStateAction<typeof defaultData>>
+  data: B2BContextProps
+  setData: React.Dispatch<React.SetStateAction<B2BContextProps>>
 }
 
 export const B2BContext = createContext<B2BContextType>({
