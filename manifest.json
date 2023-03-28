@@ -37,9 +37,15 @@
     "vtex.b2b-organizations-graphql": "0.x",
     "vtex.storefront-permissions": "1.x"
   },
-  "registries": [
-    "smartcheckout"
+  "registries": ["smartcheckout"],
+  "policies": [
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "{{workspace}}--{{account}}.myvtex.com",
+        "path": "/_v/b2b-sales-representative-quotes/*"
+      }
+    }
   ],
-  "policies": [],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
