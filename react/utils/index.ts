@@ -330,3 +330,18 @@ export const useFormattedStatus = () => {
 
   return formatStatus
 }
+
+export async function getGoal(organizationId: string): Promise<number> {
+  const response = await fetch(
+    `/_v/b2b-sales-representative-quotes/goal/${organizationId}`,
+    commonFetchOptions
+  )
+
+  const goalResponse = await response.json()
+
+  if (goalResponse.error) {
+    throw Error(goalResponse.error)
+  }
+
+  return goalResponse.goal
+}
