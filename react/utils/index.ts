@@ -333,14 +333,14 @@ export const useFormattedStatus = () => {
 
 export async function getGoal(organizationId: string): Promise<number> {
   const response = await fetch(
-    `/_v/b2b-sales-representative-quotes/goal/${organizationId}`,
+    `/_v/b2b-sales-representative-quotes/goal/${organizationId}?workspace=b2bgoals`,
     commonFetchOptions
   )
 
   const goalResponse = await response.json()
 
   if (goalResponse.error) {
-    throw Error(goalResponse.error)
+    console.error(goalResponse.error)
   }
 
   return goalResponse.goal
