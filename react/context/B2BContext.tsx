@@ -9,7 +9,7 @@ interface KeyData {
   value: string | number | typeof Link
 }
 
-export interface B2BContextProps {
+export interface RepresentativeAreaContextProps {
   individualGoal: KeyData
   customersPortfolio: KeyData
   remainingDaysInMonth: KeyData
@@ -18,30 +18,38 @@ export interface B2BContextProps {
   lastOrder: KeyData
 }
 
+export interface B2BContextProps {
+  organizationId: string
+  representativeArea: RepresentativeAreaContextProps
+}
+
 export const defaultData: B2BContextProps = {
-  individualGoal: {
-    description: 'Meta individual',
-    value: 0,
-  },
-  customersPortfolio: {
-    description: 'Nº de clientes na carteira',
-    value: 0,
-  },
-  remainingDaysInMonth: {
-    description: 'Dias remanescentes no mês',
-    value: getRemainingDaysInMonth(),
-  },
-  reachedValue: {
-    description: 'Valor atingido',
-    value: 0,
-  },
-  customersOrdersMonth: {
-    description: 'Nº de clientes que fizeram pedido este mês',
-    value: 0,
-  },
-  lastOrder: {
-    description: 'Último pedido',
-    value: 'carregando...',
+  organizationId: '',
+  representativeArea: {
+    individualGoal: {
+      description: 'Meta individual',
+      value: 0,
+    },
+    customersPortfolio: {
+      description: 'Nº de clientes na carteira',
+      value: 0,
+    },
+    remainingDaysInMonth: {
+      description: 'Dias remanescentes no mês',
+      value: getRemainingDaysInMonth(),
+    },
+    reachedValue: {
+      description: 'Valor atingido',
+      value: 0,
+    },
+    customersOrdersMonth: {
+      description: 'Nº de clientes que fizeram pedido este mês',
+      value: 0,
+    },
+    lastOrder: {
+      description: 'Último pedido',
+      value: 'carregando...',
+    },
   },
 }
 
@@ -58,29 +66,37 @@ export const B2BContext = createContext<B2BContextType>({
 const B2BContextProvider: FC = ({ children }) => {
   const intl = useIntl()
 
-  defaultData.individualGoal.description = intl.formatMessage({
-    id: 'store/representative-area.individualGoal',
-  })
-  defaultData.reachedValue.description = intl.formatMessage({
+  defaultData.representativeArea.individualGoal.description = intl.formatMessage(
+    {
+      id: 'store/representative-area.individualGoal',
+    }
+  )
+  defaultData.representativeArea.reachedValue.description = intl.formatMessage({
     id: 'store/representative-area.reachedValue',
   })
-  defaultData.customersPortfolio.description = intl.formatMessage({
-    id: 'store/representative-area.customersPortfolio',
-  })
-  defaultData.customersOrdersMonth.description = intl.formatMessage({
-    id: 'store/representative-area.customersOrdersMonth',
-  })
-  defaultData.remainingDaysInMonth.description = intl.formatMessage({
-    id: 'store/representative-area.remainingDaysInMonth',
-  })
-  defaultData.lastOrder.description = intl.formatMessage({
+  defaultData.representativeArea.customersPortfolio.description = intl.formatMessage(
+    {
+      id: 'store/representative-area.customersPortfolio',
+    }
+  )
+  defaultData.representativeArea.customersOrdersMonth.description = intl.formatMessage(
+    {
+      id: 'store/representative-area.customersOrdersMonth',
+    }
+  )
+  defaultData.representativeArea.remainingDaysInMonth.description = intl.formatMessage(
+    {
+      id: 'store/representative-area.remainingDaysInMonth',
+    }
+  )
+  defaultData.representativeArea.lastOrder.description = intl.formatMessage({
     id: 'store/representative-area.lastOrder',
   })
-  defaultData.lastOrder.value = intl.formatMessage({
+  defaultData.representativeArea.lastOrder.value = intl.formatMessage({
     id: 'store/representative-area.lastOrderLoading',
   })
 
-  const [data, setData] = useState<typeof defaultData>(defaultData)
+  const [data, setData] = useState<B2BContextProps>(defaultData)
 
   return (
     <B2BContext.Provider value={{ data, setData }}>

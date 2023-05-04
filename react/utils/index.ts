@@ -2,7 +2,7 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 
-import { B2BContextProps } from '../context/B2BContext'
+import { RepresentativeAreaContextProps } from '../context/B2BContext'
 
 export interface LastOrdersProps {
   limit: number
@@ -185,14 +185,22 @@ const getLocale = () =>
 
 const getPercent = (current: number, total: number) => (current / total) * 100
 
-export const getPercentReachedValue = (data: B2BContextProps) =>
-  getPercent(+data.reachedValue.value, +data.individualGoal.value ?? 1)
+export const getPercentReachedValue = (
+  representativeArea: RepresentativeAreaContextProps
+) =>
+  getPercent(
+    +representativeArea.reachedValue.value,
+    +representativeArea.individualGoal.value ?? 1
+  )
 
-export const getPercentReachedValueInteger = (data: B2BContextProps) =>
-  Math.floor(getPercentReachedValue(data))
+export const getPercentReachedValueInteger = (
+  representativeArea: RepresentativeAreaContextProps
+) => Math.floor(getPercentReachedValue(representativeArea))
 
-export const getPercentReachedValueFormatted = (data: B2BContextProps) => {
-  const percentage = getPercentReachedValue(data)
+export const getPercentReachedValueFormatted = (
+  representativeArea: RepresentativeAreaContextProps
+) => {
+  const percentage = getPercentReachedValue(representativeArea)
   const locale = getLocale()
   return (percentage / 100).toLocaleString(locale, {
     style: 'percent',

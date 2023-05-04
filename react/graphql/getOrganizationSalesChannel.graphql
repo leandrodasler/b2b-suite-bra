@@ -1,0 +1,6 @@
+query getOrganizationSalesChannel($organizationId: ID!) {
+  getOrganizationById(id: $organizationId)
+    @context(provider: "vtex.b2b-organizations-graphql") {
+    salesChannel
+  }
+}

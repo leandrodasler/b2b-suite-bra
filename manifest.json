@@ -35,7 +35,8 @@
     "vtex.format-currency": "0.x",
     "vtex.overlay-layout": "0.x",
     "vtex.b2b-organizations-graphql": "0.x",
-    "vtex.storefront-permissions": "1.x"
+    "vtex.storefront-permissions": "1.x",
+    "vtex.store-image": "0.x"
   },
   "registries": [
     "smartcheckout"

@@ -91,5 +91,17 @@
   },
   "b2b-switch-organizations": {
     "component": "B2BSwitchOrganizations"
+  },
+  "sales-channel-banner": {
+    "component": "SalesChannelBanner",
+    "composition": "children",
+    "allowed": "*",
+    "content": {
+      "properties": {
+        "images": {
+          "$ref": "app:ssesandbox04.b2b-suite-bra#/definitions/Images"
+        }
+      }
+    }
   }
 }

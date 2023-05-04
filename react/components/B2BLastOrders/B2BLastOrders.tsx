@@ -5,13 +5,13 @@ import { useCssHandles } from 'vtex.css-handles'
 import { OverlayLayout, OverlayTrigger } from 'vtex.overlay-layout'
 import { Button, Card, Link, Spinner, Tag } from 'vtex.styleguide'
 
-import { B2BContext } from '../../context/B2BContext'
+import { B2BContext, B2BContextProps } from '../../context/B2BContext'
 import {
-  formatDate,
-  getOrders,
-  getOrderStatusTypeTag,
   LastOrdersProps,
   Order,
+  formatDate,
+  getOrderStatusTypeTag,
+  getOrders,
   useFormattedStatus,
 } from '../../utils'
 import './styles.css'
@@ -39,7 +39,7 @@ function B2BLastOrders({
 }: LastOrdersProps) {
   const [orders, setOrders] = React.useState<Order[]>([])
   const [loading, setLoading] = React.useState(true)
-  const { data, setData } = React.useContext(B2BContext)
+  const { setData } = React.useContext(B2BContext)
   const handles = useCssHandles(CSS_HANDLES)
   const formatStatus = useFormattedStatus()
 
@@ -48,19 +48,22 @@ function B2BLastOrders({
     getOrders(limit)
       .then(ordersWithDetails => {
         setOrders(ordersWithDetails)
-        setData((prevData: typeof data) => ({
+        setData((prevData: B2BContextProps) => ({
           ...prevData,
-          lastOrder: {
-            description: prevData.lastOrder.description,
-            value: ordersWithDetails[0]?.orderId ? (
-              <Link
-                href={`/account#/orders-history/${ordersWithDetails[0]?.orderId}`}
-              >
-                {ordersWithDetails[0]?.orderId}
-              </Link>
-            ) : (
-              'N/A'
-            ),
+          representativeArea: {
+            ...prevData.representativeArea,
+            lastOrder: {
+              ...prevData.representativeArea.lastOrder,
+              value: ordersWithDetails[0]?.orderId ? (
+                <Link
+                  href={`/account#/orders-history/${ordersWithDetails[0]?.orderId}`}
+                >
+                  {ordersWithDetails[0]?.orderId}
+                </Link>
+              ) : (
+                'N/A'
+              ),
+            },
           },
         }))
         setLoading(false)

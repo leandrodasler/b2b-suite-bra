@@ -2,18 +2,23 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useCssHandles } from 'vtex.css-handles'
 import { FormattedCurrency } from 'vtex.format-currency'
-import { Progress, Spinner } from 'vtex.styleguide'
+import { Progress } from 'vtex.styleguide'
 
-import { B2BContext, B2BContextProps } from '../../context/B2BContext'
 import {
+  B2BContext,
+  B2BContextProps,
+  RepresentativeAreaContextProps,
+} from '../../context/B2BContext'
+import {
+  RepresentativeAreaProps,
+  User,
   getGoal,
   getMonthlyOrders,
   getPercentReachedValue,
   getPercentReachedValueFormatted,
   getUser,
-  RepresentativeAreaProps,
-  User,
 } from '../../utils'
+import B2BRepresentativeAreaSkeleton from './B2BRepresentativeAreaSkeleton'
 import './styles.css'
 
 const CSS_HANDLES = ['title', 'data', 'description', 'value']
@@ -41,6 +46,8 @@ function B2BRepresentativeArea(
     allOrdersDistinctClientAmount: 0,
   })
 
+  const { representativeArea } = data
+
   useEffect(() => {
     setLoading(true)
     getUser().then(recoveredUser => {
@@ -62,39 +69,45 @@ function B2BRepresentativeArea(
   useEffect(() => {
     setData((prevData: B2BContextProps) => ({
       ...prevData,
-      individualGoal: {
-        description: prevData.individualGoal.description,
-        value: goal
-          ? goal
-          : user?.organization === '47da0c2b-a4a5-11ec-835d-02bbf463c079'
-          ? 40000
-          : user?.organization === 'df6965b9-a499-11ec-835d-0aa8762320bd'
-          ? 35000
-          : user?.organization === '4b3635cf-b937-11ed-83ab-02032078fba7'
-          ? 30000
-          : user?.organization === '0d3ea49a-c1e6-11ed-83ab-12e19e79322b'
-          ? 25000
-          : props.individualGoal,
-      },
-      reachedValue: {
-        description: prevData.reachedValue.description,
-        value: monthlyOrders?.totalValue / 100,
-      },
-      customersPortfolio: {
-        description: prevData.customersPortfolio.description,
-        value: monthlyOrders?.allOrdersDistinctClientAmount,
-      },
-      customersOrdersMonth: {
-        description: prevData.customersOrdersMonth.description,
-        value: monthlyOrders?.monthlyOrdersDistinctClientAmount,
+      organizationId: user?.organization ?? '',
+      representativeArea: {
+        ...prevData.representativeArea,
+        individualGoal: {
+          ...prevData.representativeArea.individualGoal,
+          value: goal
+            ? goal
+            : user?.organization === '47da0c2b-a4a5-11ec-835d-02bbf463c079'
+            ? 40000
+            : user?.organization === 'df6965b9-a499-11ec-835d-0aa8762320bd'
+            ? 35000
+            : user?.organization === '4b3635cf-b937-11ed-83ab-02032078fba7'
+            ? 30000
+            : user?.organization === '0d3ea49a-c1e6-11ed-83ab-12e19e79322b'
+            ? 25000
+            : props.individualGoal,
+        },
+        reachedValue: {
+          ...prevData.representativeArea.reachedValue,
+          value: monthlyOrders?.totalValue / 100,
+        },
+        customersPortfolio: {
+          ...prevData.representativeArea.customersPortfolio,
+          value: monthlyOrders?.allOrdersDistinctClientAmount,
+        },
+        customersOrdersMonth: {
+          ...prevData.representativeArea.customersOrdersMonth,
+          value: monthlyOrders?.monthlyOrdersDistinctClientAmount,
+        },
       },
     }))
   }, [props, setData, monthlyOrders, user, goal])
 
-  const percent = useCallback(getPercentReachedValue, [data])
-  const percentFormatted = useCallback(getPercentReachedValueFormatted, [data])
+  const percent = useCallback(getPercentReachedValue, [representativeArea])
+  const percentFormatted = useCallback(getPercentReachedValueFormatted, [
+    representativeArea,
+  ])
 
-  if (loading) return <Spinner />
+  if (loading) return <B2BRepresentativeAreaSkeleton />
 
   return (
     <>
@@ -105,7 +118,7 @@ function B2BRepresentativeArea(
         </span>
       </h4>
       <div className="flex flex-wrap items-baseline">
-        {Object.keys(data).map((key, index) => (
+        {Object.keys(representativeArea).map((key, index) => (
           <div
             className={`
               flex flex-wrap self-center mb3 w-50 w-33-xl
@@ -118,25 +131,35 @@ function B2BRepresentativeArea(
             key={key}
           >
             <div className={`w-100 w-auto-xl mr2 ${handles.description}`}>
-              {data[key as keyof typeof data].description}:{' '}
+              {
+                representativeArea[key as keyof RepresentativeAreaContextProps]
+                  .description
+              }
+              :{' '}
             </div>
             <div className={`w-100 w-auto-xl b ${handles.value}`}>
               {['individualGoal', 'reachedValue'].includes(key) && (
                 <FormattedCurrency
-                  value={+data[key as keyof typeof data].value ?? '---'}
+                  value={
+                    +representativeArea[
+                      key as keyof RepresentativeAreaContextProps
+                    ].value ?? '---'
+                  }
                 />
               )}
 
               {key === 'reachedValue' && (
                 <>
-                  {data.individualGoal.value !== 0 &&
-                    ` (${percentFormatted(data)})`}
-                  <Progress percent={percent(data)} type="line" />
+                  {representativeArea.individualGoal.value !== 0 &&
+                    ` (${percentFormatted(representativeArea)})`}
+                  <Progress percent={percent(representativeArea)} type="line" />
                 </>
               )}
 
               {!['individualGoal', 'reachedValue'].includes(key) &&
-                (data[key as keyof typeof data].value ?? '---')}
+                (representativeArea[key as keyof RepresentativeAreaContextProps]
+                  .value ??
+                  '---')}
             </div>
           </div>
         ))}
