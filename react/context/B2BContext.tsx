@@ -1,8 +1,8 @@
-import React, { createContext, FC, useState } from 'react'
+import React, { createContext, FC, useEffect, useState } from 'react'
 import { useIntl } from 'react-intl'
 import { Link } from 'vtex.styleguide'
 
-import { getRemainingDaysInMonth } from '../utils'
+import { getRemainingDaysInMonth, getUser, User } from '../utils'
 
 interface KeyData {
   description: string
@@ -19,12 +19,13 @@ export interface RepresentativeAreaContextProps {
 }
 
 export interface B2BContextProps {
-  organizationId: string
+  user?: User
+  loadingUser: boolean
   representativeArea: RepresentativeAreaContextProps
 }
 
 export const defaultData: B2BContextProps = {
-  organizationId: '',
+  loadingUser: true,
   representativeArea: {
     individualGoal: {
       description: 'Meta individual',
@@ -97,6 +98,16 @@ const B2BContextProvider: FC = ({ children }) => {
   })
 
   const [data, setData] = useState<B2BContextProps>(defaultData)
+
+  useEffect(() => {
+    getUser().then(recoveredUser => {
+      setData((prevData: B2BContextProps) => ({
+        ...prevData,
+        user: recoveredUser,
+        loadingUser: false,
+      }))
+    })
+  }, [])
 
   return (
     <B2BContext.Provider value={{ data, setData }}>

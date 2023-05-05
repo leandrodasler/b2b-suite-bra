@@ -1,4 +1,10 @@
-import React, { PropsWithChildren, useContext } from 'react'
+import React, {
+  Children,
+  PropsWithChildren,
+  ReactElement,
+  cloneElement,
+  useContext,
+} from 'react'
 import { useQuery } from 'react-apollo'
 import { ImageList } from 'vtex.store-image'
 
@@ -15,7 +21,7 @@ interface Link {
   newTab?: boolean
 }
 
-export type ImagesSchema = Array<{
+interface Image {
   image: string
   mobileImage: string
   link?: Link
@@ -28,9 +34,11 @@ export type ImagesSchema = Array<{
   promotionId?: string
   promotionName?: string
   promotionPosition?: string
-}>
+}
 
-export interface ImageListProps {
+type ImagesSchema = Array<Image>
+
+interface ImageListProps {
   images: ImagesSchema | null
   height?: number
   preload?: boolean
@@ -40,14 +48,32 @@ interface B2BOrganizationSalesChannelQuery {
   getOrganizationById: { salesChannel: string }
 }
 
+const imageHasSalesChannelFactory = (salesChannel: string) => (
+  image: Image
+) => {
+  const imageSalesChannels =
+    image.salesChannels && !/^\s*$/.test(image.salesChannels)
+      ? image.salesChannels?.trim().split(/\s*,\s*/)
+      : null
+
+  if (!imageSalesChannels) {
+    return true
+  }
+
+  return imageSalesChannels.includes(salesChannel)
+}
+
 const SalesChannelBanner = ({
   images,
   height = 420,
+  children,
   ...rest
 }: PropsWithChildren<ImageListProps>) => {
   const {
-    data: { organizationId },
+    data: { user, loadingUser },
   } = useContext(B2BContext)
+
+  const organizationId = user?.organization
 
   const { data: organizationSalesChannel } = useQuery<
     B2BOrganizationSalesChannelQuery
@@ -58,36 +84,37 @@ const SalesChannelBanner = ({
     skip: !organizationId,
   })
 
+  if (!images?.length) {
+    return null
+  }
+
   const {
     getOrganizationById: { salesChannel },
   } = organizationSalesChannel || { getOrganizationById: { salesChannel: '' } }
 
-  const filteredImages = salesChannel
-    ? images
-      ? images.filter(image => {
-          const salesChannels =
-            image.salesChannels && !/^\s*$/.test(image.salesChannels)
-              ? image.salesChannels?.trim().split(/\s*,\s*/)
-              : null
-
-          if (!salesChannels) {
-            return true
-          }
-
-          return salesChannels.includes(salesChannel)
-        })
-      : []
-    : undefined
-
-  if (!images?.length) {
-    return null
-  }
+  const filteredImages =
+    loadingUser && !salesChannel
+      ? undefined
+      : images.filter(imageHasSalesChannelFactory(salesChannel))
 
   if (!filteredImages) {
     return <Skeleton height={height} />
   }
 
-  return <ImageList images={filteredImages} height={height} {...rest} />
+  const slider =
+    filteredImages.length > 1
+      ? Children.map(children as ReactElement, child =>
+          cloneElement(child, {
+            autoplay: { timeout: 8000, stopOnHover: true },
+          })
+        )
+      : children
+
+  return (
+    <ImageList images={filteredImages} height={height} {...rest}>
+      {slider}
+    </ImageList>
+  )
 }
 
 SalesChannelBanner.schema = IMAGE_LIST_SCHEMA

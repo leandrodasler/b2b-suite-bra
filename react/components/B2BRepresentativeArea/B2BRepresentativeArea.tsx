@@ -11,12 +11,10 @@ import {
 } from '../../context/B2BContext'
 import {
   RepresentativeAreaProps,
-  User,
   getGoal,
   getMonthlyOrders,
   getPercentReachedValue,
   getPercentReachedValueFormatted,
-  getUser,
 } from '../../utils'
 import B2BRepresentativeAreaSkeleton from './B2BRepresentativeAreaSkeleton'
 import './styles.css'
@@ -31,7 +29,6 @@ function B2BRepresentativeArea(
     customersOrdersMonth: 0,
   }
 ) {
-  const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const { data, setData } = React.useContext(B2BContext)
   const handles = useCssHandles(CSS_HANDLES)
@@ -46,30 +43,25 @@ function B2BRepresentativeArea(
     allOrdersDistinctClientAmount: 0,
   })
 
-  const { representativeArea } = data
+  const { representativeArea, user } = data
 
   useEffect(() => {
-    setLoading(true)
-    getUser().then(recoveredUser => {
-      setUser(recoveredUser)
+    if (user?.organization) {
+      setLoading(true)
 
-      recoveredUser.organization &&
-        getGoal(recoveredUser.organization).then(goal => {
-          setGoal(goal)
-          recoveredUser.organization &&
-            recoveredUser.costCenter &&
-            getMonthlyOrders().then(orders => {
-              setMonthlyOrders(orders)
-              setLoading(false)
-            })
+      getGoal(user.organization).then(goal => {
+        setGoal(goal)
+        getMonthlyOrders().then(orders => {
+          setMonthlyOrders(orders)
+          setLoading(false)
         })
-    })
-  }, [])
+      })
+    }
+  }, [user])
 
   useEffect(() => {
     setData((prevData: B2BContextProps) => ({
       ...prevData,
-      organizationId: user?.organization ?? '',
       representativeArea: {
         ...prevData.representativeArea,
         individualGoal: {
