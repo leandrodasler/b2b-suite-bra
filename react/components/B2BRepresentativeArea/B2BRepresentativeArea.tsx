@@ -43,11 +43,11 @@ function B2BRepresentativeArea(
     allOrdersDistinctClientAmount: 0,
   })
 
-  const { representativeArea, user } = data
+  const { representativeArea, user } = data || {}
 
   useEffect(() => {
     if (user?.organization) {
-      setLoading(true)
+      // setLoading(true)
 
       getGoal(user.organization).then(goal => {
         setGoal(goal)
@@ -60,7 +60,7 @@ function B2BRepresentativeArea(
   }, [user])
 
   useEffect(() => {
-    setData((prevData: B2BContextProps) => ({
+    setData?.((prevData: B2BContextProps) => ({
       ...prevData,
       representativeArea: {
         ...prevData.representativeArea,
@@ -110,9 +110,10 @@ function B2BRepresentativeArea(
         </span>
       </h4>
       <div className="flex flex-wrap items-baseline">
-        {Object.keys(representativeArea).map((key, index) => (
-          <div
-            className={`
+        {!!representativeArea &&
+          Object.keys(representativeArea).map((key, index) => (
+            <div
+              className={`
               flex flex-wrap self-center mb3 w-50 w-33-xl
               ${handles.data}
               ${[0, 3].includes(index) ? 'w-34-xl' : ''}
@@ -120,41 +121,46 @@ function B2BRepresentativeArea(
               ${[2, 5].includes(index) ? 'justify-end-xl' : ''}
               ${[2, 5].includes(index) ? 'justify-end-xl' : ''}
             `}
-            key={key}
-          >
-            <div className={`w-100 w-auto-xl mr2 ${handles.description}`}>
-              {
-                representativeArea[key as keyof RepresentativeAreaContextProps]
-                  .description
-              }
-              :{' '}
-            </div>
-            <div className={`w-100 w-auto-xl b ${handles.value}`}>
-              {['individualGoal', 'reachedValue'].includes(key) && (
-                <FormattedCurrency
-                  value={
-                    +representativeArea[
-                      key as keyof RepresentativeAreaContextProps
-                    ].value ?? '---'
-                  }
-                />
-              )}
+              key={key}
+            >
+              <div className={`w-100 w-auto-xl mr2 ${handles.description}`}>
+                {
+                  representativeArea[
+                    key as keyof RepresentativeAreaContextProps
+                  ].description
+                }
+                :{' '}
+              </div>
+              <div className={`w-100 w-auto-xl b ${handles.value}`}>
+                {['individualGoal', 'reachedValue'].includes(key) && (
+                  <FormattedCurrency
+                    value={
+                      +representativeArea[
+                        key as keyof RepresentativeAreaContextProps
+                      ].value ?? '---'
+                    }
+                  />
+                )}
 
-              {key === 'reachedValue' && (
-                <>
-                  {representativeArea.individualGoal.value !== 0 &&
-                    ` (${percentFormatted(representativeArea)})`}
-                  <Progress percent={percent(representativeArea)} type="line" />
-                </>
-              )}
+                {key === 'reachedValue' && (
+                  <>
+                    {representativeArea.individualGoal.value !== 0 &&
+                      ` (${percentFormatted(representativeArea)})`}
+                    <Progress
+                      percent={percent(representativeArea)}
+                      type="line"
+                    />
+                  </>
+                )}
 
-              {!['individualGoal', 'reachedValue'].includes(key) &&
-                (representativeArea[key as keyof RepresentativeAreaContextProps]
-                  .value ??
-                  '---')}
+                {!['individualGoal', 'reachedValue'].includes(key) &&
+                  (representativeArea[
+                    key as keyof RepresentativeAreaContextProps
+                  ].value ??
+                    '---')}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </>
   )

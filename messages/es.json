@@ -1,4 +1,8 @@
 {
+  "store/buyButton-label-unavailable": "Unavailable",
+  "store/product-quantity.quantity-available": "Quantity available",
+  "store/product-description.property": "Property",
+  "store/product-description.specification": "Specification",
   "store/product-quantity.quantity": "Cantidad",
   "store/specifications.title": "Especificaciones",
   "store/add-to-cart.success": "Ítem agregado a su carrito",
@@ -95,6 +99,9 @@
   "admin/editor.image-list.images.link.noFollow.title": "Link nofollow",
   "admin/editor.image-list.images.link.title.title": "Título para o link",
   "admin/editor.image-list.height.title": "Altura máxima de cada imagem (px)",
+  "admin/editor.image-list.heightMobile.title": "Altura máxima de cada imagem no mobile (px)",
+  "admin/editor.image-list.autoplay.title": "Autoplay interval (ms)",
+  "admin/editor.image-list.autoplay.description": "If empty or only one image has been added, autoplay is disabled",
   "admin/editor.image-list.images.width.title": "Largura da imagem",
   "admin/editor.image-list.images.salesChannels.title": "Políticas comerciais",
   "admin/editor.image-list.images.salesChannels.description": "IDs de políticas comerciais separados por vírgulas",

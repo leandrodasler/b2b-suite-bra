@@ -21,32 +21,32 @@ function B2BRepresentativeAreaSkeleton() {
       </h4>
       <div className="flex flex-wrap items-center">
         <div
-          className={`flex flex-wrap self-center mb3 ph3 w-50 w-34-xl ${handles.data} `}
+          className={`flex flex-wrap self-center mv6 mv0-xl mb3-xl ph3 w-50 w-34-xl ${handles.data} `}
         >
           {skeleton}
         </div>
         <div
-          className={`flex flex-wrap self-center mb3 ph3 w-50 w-33-xl justify-center-xl ${handles.data} `}
+          className={`flex flex-wrap self-center mv6 mv0-xl mb3-xl ph3 w-50 w-33-xl justify-center-xl ${handles.data} `}
         >
           {skeleton}
         </div>
         <div
-          className={`flex flex-wrap self-center mb3 ph3 w-50 w-33-xl justify-end-xl ${handles.data} `}
+          className={`flex flex-wrap self-center mv6 mv0-xl mb3-xl ph3 w-50 w-33-xl justify-end-xl ${handles.data} `}
         >
           {skeleton}
         </div>
         <div
-          className={`flex flex-wrap self-center mb3 ph3 w-50 w-34-xl ${handles.data} `}
+          className={`flex flex-wrap self-center mv6 mv0-xl mb3-xl ph3 w-50 w-34-xl ${handles.data} `}
         >
           {skeleton}
         </div>
         <div
-          className={`flex flex-wrap self-center mb3 ph3 w-50 w-33-xl justify-center-xl ${handles.data} `}
+          className={`flex flex-wrap self-center mv6 mv0-xl mb3-xl ph3 w-50 w-33-xl justify-center-xl ${handles.data} `}
         >
           {skeleton}
         </div>
         <div
-          className={`flex flex-wrap self-center mb3 ph3 w-50 w-33-xl justify-end-xl ${handles.data} `}
+          className={`flex flex-wrap self-center mv6 mv0-xl mb3-xl ph3 w-50 w-33-xl justify-end-xl ${handles.data} `}
         >
           {skeleton}
         </div>

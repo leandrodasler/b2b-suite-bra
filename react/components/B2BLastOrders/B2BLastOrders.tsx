@@ -48,7 +48,7 @@ function B2BLastOrders({
     getOrders(limit)
       .then(ordersWithDetails => {
         setOrders(ordersWithDetails)
-        setData((prevData: B2BContextProps) => ({
+        setData?.((prevData: B2BContextProps) => ({
           ...prevData,
           representativeArea: {
             ...prevData.representativeArea,

@@ -35,6 +35,15 @@ const IMAGE_LIST_MESSAGES = defineMessages({
   heightTitle: {
     id: 'admin/editor.image-list.height.title',
   },
+  heightMobileTitle: {
+    id: 'admin/editor.image-list.heightMobile.title',
+  },
+  autoplayTitle: {
+    id: 'admin/editor.image-list.autoplay.title',
+  },
+  autoplayDescription: {
+    id: 'admin/editor.image-list.autoplay.description',
+  },
   widthTitle: {
     id: 'admin/editor.image-list.images.width.title',
   },
@@ -70,6 +79,17 @@ export const IMAGE_LIST_SCHEMA = {
       default: 420,
       isLayout: false,
       title: IMAGE_LIST_MESSAGES.heightTitle.id,
+      type: 'number',
+    },
+    heightMobile: {
+      isLayout: false,
+      title: IMAGE_LIST_MESSAGES.heightMobileTitle.id,
+      type: 'number',
+    },
+    autoplay: {
+      isLayout: false,
+      title: IMAGE_LIST_MESSAGES.autoplayTitle.id,
+      description: IMAGE_LIST_MESSAGES.autoplayDescription.id,
       type: 'number',
     },
   },

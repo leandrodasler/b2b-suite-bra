@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, {
   Children,
   PropsWithChildren,
@@ -6,10 +7,11 @@ import React, {
   useContext,
 } from 'react'
 import { useQuery } from 'react-apollo'
+import { useDevice } from 'vtex.device-detector'
 import { ImageList } from 'vtex.store-image'
 
 import { B2BContext } from '../../context/B2BContext'
-import GET_ORGANIZATION_SALES_CHANNEL from '../../graphql/getOrganizationSalesChannel.graphql'
+import GET_SALES_CHANNEL from '../../graphql/getOrganizationSalesChannel.graphql'
 import Skeleton from '../Skeleton/Skeleton'
 import { IMAGE_LIST_SCHEMA } from './schema'
 
@@ -21,7 +23,7 @@ interface Link {
   newTab?: boolean
 }
 
-interface Image {
+interface SingleImage {
   image: string
   mobileImage: string
   link?: Link
@@ -36,20 +38,19 @@ interface Image {
   promotionPosition?: string
 }
 
-type ImagesSchema = Array<Image>
-
-interface ImageListProps {
-  images: ImagesSchema | null
+interface SalesChannelBannerProps {
+  images: Array<SingleImage> | null
   height?: number
-  preload?: boolean
+  heightMobile?: number
+  autoplay?: number
 }
 
-interface B2BOrganizationSalesChannelQuery {
+interface SalesChannelQuery {
   getOrganizationById: { salesChannel: string }
 }
 
 const imageHasSalesChannelFactory = (salesChannel: string) => (
-  image: Image
+  image: SingleImage
 ) => {
   const imageSalesChannels =
     image.salesChannels && !/^\s*$/.test(image.salesChannels)
@@ -66,23 +67,28 @@ const imageHasSalesChannelFactory = (salesChannel: string) => (
 const SalesChannelBanner = ({
   images,
   height = 420,
+  heightMobile,
+  autoplay,
   children,
   ...rest
-}: PropsWithChildren<ImageListProps>) => {
-  const {
-    data: { user, loadingUser },
-  } = useContext(B2BContext)
+}: PropsWithChildren<SalesChannelBannerProps>) => {
+  const { device } = useDevice()
+
+  const { data } = useContext(B2BContext)
+
+  const { user, loadingUser } = data || {}
 
   const organizationId = user?.organization
 
-  const { data: organizationSalesChannel } = useQuery<
-    B2BOrganizationSalesChannelQuery
-  >(GET_ORGANIZATION_SALES_CHANNEL, {
-    variables: {
-      organizationId,
-    },
-    skip: !organizationId,
-  })
+  const { data: organizationSalesChannel } = useQuery<SalesChannelQuery>(
+    GET_SALES_CHANNEL,
+    {
+      variables: {
+        organizationId,
+      },
+      skip: !organizationId,
+    }
+  )
 
   if (!images?.length) {
     return null
@@ -92,28 +98,32 @@ const SalesChannelBanner = ({
     getOrganizationById: { salesChannel },
   } = organizationSalesChannel || { getOrganizationById: { salesChannel: '' } }
 
-  const filteredImages =
-    loadingUser && !salesChannel
-      ? undefined
-      : images.filter(imageHasSalesChannelFactory(salesChannel))
+  const responsiveHeight =
+    device === 'phone' && !!heightMobile ? heightMobile : height
 
-  if (!filteredImages) {
-    return <Skeleton height={height} />
+  if (loadingUser && !salesChannel) {
+    return <Skeleton height={responsiveHeight} />
   }
 
+  const filteredImages = images.filter(
+    imageHasSalesChannelFactory(salesChannel)
+  )
+
   const slider =
-    filteredImages.length > 1
+    !!autoplay && filteredImages?.length > 1
       ? Children.map(children as ReactElement, child =>
           cloneElement(child, {
-            autoplay: { timeout: 8000, stopOnHover: true },
+            autoplay: { timeout: autoplay, stopOnHover: true },
           })
         )
       : children
 
   return (
-    <ImageList images={filteredImages} height={height} {...rest}>
-      {slider}
-    </ImageList>
+    !!filteredImages.length && (
+      <ImageList images={filteredImages} height={responsiveHeight} {...rest}>
+        {slider}
+      </ImageList>
+    )
   )
 }
 
