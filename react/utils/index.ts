@@ -268,11 +268,11 @@ export async function getUser(): Promise<User> {
     }
   }
 
-  const b2bUserId = session.namespaces['storefront-permissions'].userId?.value
+  const b2bUserId = session?.namespaces['storefront-permissions']?.userId?.value
   const organization =
-    session.namespaces['storefront-permissions'].organization?.value
+    session?.namespaces['storefront-permissions']?.organization?.value
   const costCenter =
-    session.namespaces['storefront-permissions'].costcenter?.value
+    session?.namespaces['storefront-permissions']?.costcenter?.value
 
   return {
     ...session?.namespaces?.profile,
