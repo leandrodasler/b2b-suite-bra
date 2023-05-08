@@ -47,8 +47,6 @@ function B2BRepresentativeArea(
 
   useEffect(() => {
     if (user?.organization) {
-      // setLoading(true)
-
       getGoal(user.organization).then(goal => {
         setGoal(goal)
         getMonthlyOrders().then(orders => {

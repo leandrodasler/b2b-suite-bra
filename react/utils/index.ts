@@ -339,17 +339,32 @@ export const useFormattedStatus = () => {
   return formatStatus
 }
 
-export async function getGoal(organizationId: string): Promise<number> {
-  const response = await fetch(
-    `/_v/b2b-sales-representative-quotes/goal/${organizationId}?workspace=b2bgoals`,
-    commonFetchOptions
-  )
-
-  const goalResponse = await response.json()
-
-  if (goalResponse.error) {
-    console.error(goalResponse.error)
+declare global {
+  interface Window {
+    __RUNTIME__: Record<string, unknown>
   }
+}
 
-  return goalResponse.goal
+export async function getGoal(organizationId: string): Promise<number> {
+  try {
+    const {
+      __RUNTIME__: { account },
+    } = window
+
+    const response = await fetch(
+      `https://b2bgoals--${account}.myvtex.com/_v/b2b-sales-representative-quotes/goal/${organizationId}`,
+      { ...commonFetchOptions, credentials: undefined }
+    )
+
+    const goalResponse = await response.json()
+
+    if (goalResponse.error) {
+      console.error('Error getting goal:', goalResponse.error)
+    }
+
+    return goalResponse.goal
+  } catch (error) {
+    console.error('Error getting goal:', error)
+    return 0
+  }
 }
