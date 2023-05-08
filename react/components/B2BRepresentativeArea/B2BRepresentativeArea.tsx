@@ -37,17 +37,23 @@ function B2BRepresentativeArea(
     totalValue: number
     monthlyOrdersDistinctClientAmount: number
     allOrdersDistinctClientAmount: number
-  }>({
-    totalValue: 0,
-    monthlyOrdersDistinctClientAmount: 0,
-    allOrdersDistinctClientAmount: 0,
-  })
+  }>()
 
-  const { representativeArea, user } = data || {}
+  const representativeArea = data?.representativeArea
+  const user = data?.user
+  const organization = data?.user?.organization
+  const costCenter = data?.user?.costCenter
 
   useEffect(() => {
-    if (user?.organization) {
-      getGoal(user.organization).then(goal => {
+    if (organization) {
+      // eslint-disable-next-line no-console
+      console.log('updating representative area')
+      // eslint-disable-next-line no-console
+      console.log('organization:', organization)
+      // eslint-disable-next-line no-console
+      console.log('costCenter:', costCenter)
+
+      getGoal(organization).then(goal => {
         setGoal(goal)
         getMonthlyOrders().then(orders => {
           setMonthlyOrders(orders)
@@ -55,42 +61,44 @@ function B2BRepresentativeArea(
         })
       })
     }
-  }, [user])
+  }, [organization, costCenter])
 
   useEffect(() => {
-    setData?.((prevData: B2BContextProps) => ({
-      ...prevData,
-      representativeArea: {
-        ...prevData.representativeArea,
-        individualGoal: {
-          ...prevData.representativeArea.individualGoal,
-          value: goal
-            ? goal
-            : user?.organization === '47da0c2b-a4a5-11ec-835d-02bbf463c079'
-            ? 40000
-            : user?.organization === 'df6965b9-a499-11ec-835d-0aa8762320bd'
-            ? 35000
-            : user?.organization === '4b3635cf-b937-11ed-83ab-02032078fba7'
-            ? 30000
-            : user?.organization === '0d3ea49a-c1e6-11ed-83ab-12e19e79322b'
-            ? 25000
-            : props.individualGoal,
+    if (monthlyOrders) {
+      setData?.((prevData: B2BContextProps) => ({
+        ...prevData,
+        representativeArea: {
+          ...prevData.representativeArea,
+          individualGoal: {
+            ...prevData.representativeArea.individualGoal,
+            value: goal
+              ? goal
+              : organization === '47da0c2b-a4a5-11ec-835d-02bbf463c079'
+              ? 40000
+              : organization === 'df6965b9-a499-11ec-835d-0aa8762320bd'
+              ? 35000
+              : organization === '4b3635cf-b937-11ed-83ab-02032078fba7'
+              ? 30000
+              : organization === '0d3ea49a-c1e6-11ed-83ab-12e19e79322b'
+              ? 25000
+              : props.individualGoal,
+          },
+          reachedValue: {
+            ...prevData.representativeArea.reachedValue,
+            value: (monthlyOrders.totalValue ?? 0) / 100,
+          },
+          customersPortfolio: {
+            ...prevData.representativeArea.customersPortfolio,
+            value: monthlyOrders.allOrdersDistinctClientAmount,
+          },
+          customersOrdersMonth: {
+            ...prevData.representativeArea.customersOrdersMonth,
+            value: monthlyOrders.monthlyOrdersDistinctClientAmount,
+          },
         },
-        reachedValue: {
-          ...prevData.representativeArea.reachedValue,
-          value: monthlyOrders?.totalValue / 100,
-        },
-        customersPortfolio: {
-          ...prevData.representativeArea.customersPortfolio,
-          value: monthlyOrders?.allOrdersDistinctClientAmount,
-        },
-        customersOrdersMonth: {
-          ...prevData.representativeArea.customersOrdersMonth,
-          value: monthlyOrders?.monthlyOrdersDistinctClientAmount,
-        },
-      },
-    }))
-  }, [props, setData, monthlyOrders, user, goal])
+      }))
+    }
+  }, [props, setData, monthlyOrders, organization, goal])
 
   const percent = useCallback(getPercentReachedValue, [representativeArea])
   const percentFormatted = useCallback(getPercentReachedValueFormatted, [
