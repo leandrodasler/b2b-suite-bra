@@ -254,18 +254,23 @@ export const getOrderStatusTypeTag = (status: OrderStatusType): string =>
   ORDER_STATUS_BACKGROUND_MAP[status] || 'warning'
 
 export async function getUser(): Promise<User> {
-  const sessionResponse = await fetch(
-    '/api/sessions?items=*',
-    commonFetchOptions
-  )
+  let session
+  while (!session?.namespaces['storefront-permissions']) {
+    const sessionResponse = await fetch(
+      '/api/sessions?items=*',
+      commonFetchOptions
+    )
+    session = await sessionResponse.json()
+    if (!session?.namespaces['storefront-permissions']) {
+      await new Promise(resolve => setTimeout(resolve, 500))
+    }
+  }
 
-  const session = await sessionResponse.json()
-
-  const b2bUserId = session?.namespaces['storefront-permissions']?.userId?.value
+  const b2bUserId = session.namespaces['storefront-permissions'].userId?.value
   const organization =
-    session?.namespaces['storefront-permissions']?.organization?.value
+    session.namespaces['storefront-permissions'].organization?.value
   const costCenter =
-    session?.namespaces['storefront-permissions']?.costcenter?.value
+    session.namespaces['storefront-permissions'].costcenter?.value
 
   return {
     ...session?.namespaces?.profile,
@@ -274,6 +279,28 @@ export async function getUser(): Promise<User> {
     costCenter,
   }
 }
+
+// export async function getUser(): Promise<User> {
+//   const sessionResponse = await fetch(
+//     '/api/sessions?items=*',
+//     commonFetchOptions
+//   )
+
+//   const session = await sessionResponse.json()
+
+//   const b2bUserId = session?.namespaces['storefront-permissions']?.userId?.value
+//   const organization =
+//     session?.namespaces['storefront-permissions']?.organization?.value
+//   const costCenter =
+//     session?.namespaces['storefront-permissions']?.costcenter?.value
+
+//   return {
+//     ...session?.namespaces?.profile,
+//     b2bUserId,
+//     organization,
+//     costCenter,
+//   }
+// }
 
 export const useSessionUser = (): {
   user: User | undefined
