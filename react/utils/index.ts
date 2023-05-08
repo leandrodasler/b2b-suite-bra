@@ -255,7 +255,9 @@ export const getOrderStatusTypeTag = (status: OrderStatusType): string =>
 
 export async function getUser(): Promise<User> {
   let session
-  while (!session?.namespaces['storefront-permissions']) {
+  let count = 0
+  while (!session?.namespaces['storefront-permissions'] || count === 4) {
+    count++
     const sessionResponse = await fetch(
       '/api/sessions?items=*',
       commonFetchOptions
