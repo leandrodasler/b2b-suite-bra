@@ -1,7 +1,7 @@
 {
   "vendor": "ssesandbox04",
   "name": "b2b-suite-bra",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "title": "B2B Suite Brasil",
   "description": "Provides blocks for B2B facilities in the storefront",
   "scripts": {
@@ -36,7 +36,9 @@
     "vtex.storefront-permissions": "1.x",
     "vtex.store-image": "0.x"
   },
-  "registries": ["smartcheckout"],
+  "registries": [
+    "smartcheckout"
+  ],
   "policies": [
     {
       "name": "outbound-access",
