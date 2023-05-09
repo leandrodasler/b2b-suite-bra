@@ -92,6 +92,12 @@
   "b2b-switch-organizations": {
     "component": "B2BSwitchOrganizations"
   },
+  "skeleton": {
+    "component": "Skeleton"
+  },
+  "spinner": {
+    "component": "Spinner"
+  },
   "sales-channel-banner": {
     "component": "SalesChannelBanner",
     "composition": "children",

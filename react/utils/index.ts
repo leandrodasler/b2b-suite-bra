@@ -256,6 +256,7 @@ export const getOrderStatusTypeTag = (status: OrderStatusType): string =>
 export async function getUser(): Promise<User> {
   let session
   let count = 0
+
   while (!session?.namespaces['storefront-permissions'] && count <= 4) {
     count++
     const sessionResponse = await fetch(
@@ -264,7 +265,7 @@ export async function getUser(): Promise<User> {
     )
     session = await sessionResponse.json()
     if (!session?.namespaces['storefront-permissions']) {
-      await new Promise(resolve => setTimeout(resolve, 500))
+      await new Promise(resolve => setTimeout(resolve, 250))
     }
   }
 
