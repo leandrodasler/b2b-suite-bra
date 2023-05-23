@@ -44,18 +44,8 @@ function B2BRepresentativeArea(
   const organization = data?.user?.organization
   const costCenter = data?.user?.costCenter
 
-  // eslint-disable-next-line no-console
-  console.log('B2B Context data on representative area:', data)
-
   useEffect(() => {
     if (organization) {
-      // eslint-disable-next-line no-console
-      console.log('updating representative area')
-      // eslint-disable-next-line no-console
-      console.log('organization:', organization)
-      // eslint-disable-next-line no-console
-      console.log('costCenter:', costCenter)
-
       getGoal(organization).then(goal => {
         setGoal(goal)
         getMonthlyOrders().then(orders => {

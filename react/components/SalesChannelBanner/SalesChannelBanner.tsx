@@ -94,9 +94,8 @@ const SalesChannelBanner = ({
     return null
   }
 
-  const {
-    getOrganizationById: { salesChannel },
-  } = organizationSalesChannel || { getOrganizationById: { salesChannel: '' } }
+  const salesChannel =
+    organizationSalesChannel?.getOrganizationById?.salesChannel
 
   const responsiveHeight =
     device === 'phone' && !!heightMobile ? heightMobile : height
@@ -105,12 +104,12 @@ const SalesChannelBanner = ({
     return <Skeleton height={responsiveHeight} />
   }
 
-  const filteredImages = images.filter(
-    imageHasSalesChannelFactory(salesChannel)
-  )
+  const filteredImages = salesChannel
+    ? images.filter(imageHasSalesChannelFactory(salesChannel))
+    : null
 
   const slider =
-    !!autoplay && filteredImages?.length > 1
+    !!autoplay && (filteredImages?.length ?? 0) > 1
       ? Children.map(children as ReactElement, child =>
           cloneElement(child, {
             autoplay: { timeout: autoplay, stopOnHover: true },
@@ -119,7 +118,7 @@ const SalesChannelBanner = ({
       : children
 
   return (
-    !!filteredImages.length && (
+    !!filteredImages?.length && (
       <ImageList images={filteredImages} height={responsiveHeight} {...rest}>
         {slider}
       </ImageList>
