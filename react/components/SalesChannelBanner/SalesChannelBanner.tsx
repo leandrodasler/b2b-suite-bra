@@ -80,15 +80,15 @@ const SalesChannelBanner = ({
 
   const organizationId = user?.organization
 
-  const { data: organizationSalesChannel } = useQuery<SalesChannelQuery>(
-    GET_SALES_CHANNEL,
-    {
-      variables: {
-        organizationId,
-      },
-      skip: !organizationId,
-    }
-  )
+  const {
+    data: organizationSalesChannel,
+    loading: loadingOrganizationSalesChannel,
+  } = useQuery<SalesChannelQuery>(GET_SALES_CHANNEL, {
+    variables: {
+      organizationId,
+    },
+    skip: !organizationId,
+  })
 
   if (!images?.length) {
     return null
@@ -100,13 +100,13 @@ const SalesChannelBanner = ({
   const responsiveHeight =
     device === 'phone' && !!heightMobile ? heightMobile : height
 
-  if (loadingUser && !salesChannel) {
+  if (loadingUser || loadingOrganizationSalesChannel) {
     return <Skeleton height={responsiveHeight} />
   }
 
-  const filteredImages = salesChannel
-    ? images.filter(imageHasSalesChannelFactory(salesChannel))
-    : null
+  const filteredImages = images.filter(
+    imageHasSalesChannelFactory(salesChannel ?? '')
+  )
 
   const slider =
     !!autoplay && (filteredImages?.length ?? 0) > 1

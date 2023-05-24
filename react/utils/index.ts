@@ -147,17 +147,17 @@ export const getMonthlyOrders = async (): Promise<{
   const allOrdersDistinctClientAmount = getDistintClientAmount(allOrders)
 
   // eslint-disable-next-line no-console
-  console.log('Nº de clientes na carteira:', allOrdersDistinctClientAmount)
+  // console.log('Nº de clientes na carteira:', allOrdersDistinctClientAmount)
 
   // eslint-disable-next-line no-console
-  console.log('All orders:', allOrders)
+  // console.log('All orders:', allOrders)
 
   const monthlyOrders = allOrders.filter(order =>
     omsPvtOrders.find(omsPvtOrder => omsPvtOrder.orderId === order.orderId)
   )
 
   // eslint-disable-next-line no-console
-  console.log('Orders do mês: ', monthlyOrders)
+  // console.log('Orders do mês: ', monthlyOrders)
 
   const totalValue = monthlyOrders
     .filter(order => order.paymentApprovedDate)
@@ -168,10 +168,10 @@ export const getMonthlyOrders = async (): Promise<{
     monthlyOrders
   )
   // eslint-disable-next-line no-console
-  console.log(
-    'Nº de clientes que fizeram pedido este mês:',
-    monthlyOrdersDistinctClientAmount
-  )
+  // console.log(
+  // 'Nº de clientes que fizeram pedido este mês:',
+  // monthlyOrdersDistinctClientAmount
+  // )
 
   return {
     totalValue,

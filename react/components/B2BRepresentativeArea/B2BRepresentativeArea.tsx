@@ -21,6 +21,17 @@ import './styles.css'
 
 const CSS_HANDLES = ['title', 'data', 'description', 'value']
 
+interface MonthlyOrders {
+  totalValue: number
+  monthlyOrdersDistinctClientAmount: number
+  allOrdersDistinctClientAmount: number
+}
+
+interface MonthlyOrdersFromLocalStorage extends MonthlyOrders {
+  expireAt: number
+  goal: number
+}
+
 function B2BRepresentativeArea(
   props: RepresentativeAreaProps = {
     individualGoal: 0,
@@ -33,11 +44,7 @@ function B2BRepresentativeArea(
   const { data, setData } = React.useContext(B2BContext)
   const handles = useCssHandles(CSS_HANDLES)
   const [goal, setGoal] = useState(0)
-  const [monthlyOrders, setMonthlyOrders] = useState<{
-    totalValue: number
-    monthlyOrdersDistinctClientAmount: number
-    allOrdersDistinctClientAmount: number
-  }>()
+  const [monthlyOrders, setMonthlyOrders] = useState<MonthlyOrders>()
 
   const representativeArea = data?.representativeArea
   const user = data?.user
@@ -45,16 +52,40 @@ function B2BRepresentativeArea(
   const costCenter = data?.user?.costCenter
 
   useEffect(() => {
-    if (organization) {
-      getGoal(organization).then(goal => {
-        setGoal(goal)
-        getMonthlyOrders().then(orders => {
-          setMonthlyOrders(orders)
-          setLoading(false)
+    if (organization && user) {
+      const localStorageKey = `monthlyOrders-${user.b2bUserId}`
+      const localStorageMonthlyOrders = JSON.parse(
+        localStorage.getItem(localStorageKey) ?? 'null'
+      ) as MonthlyOrdersFromLocalStorage
+
+      if (localStorageMonthlyOrders?.expireAt > Date.now()) {
+        setMonthlyOrders(localStorageMonthlyOrders)
+        setGoal(localStorageMonthlyOrders.goal)
+        setLoading(false)
+      } else {
+        getGoal(organization).then(goal => {
+          setGoal(goal)
+
+          getMonthlyOrders().then(orders => {
+            setMonthlyOrders(orders)
+
+            const expireAt = Date.now() + 1000 * 60 * 5
+
+            localStorage.setItem(
+              localStorageKey,
+              JSON.stringify({
+                expireAt,
+                goal,
+                ...orders,
+              })
+            )
+
+            setLoading(false)
+          })
         })
-      })
+      }
     }
-  }, [organization, costCenter])
+  }, [organization, costCenter, user])
 
   useEffect(() => {
     if (monthlyOrders) {
