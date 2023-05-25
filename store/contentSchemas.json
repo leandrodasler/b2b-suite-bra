@@ -78,13 +78,13 @@
     },
     "Images": {
       "type": "array",
-      "title": "admin/editor.image-list.images.title",
+      "title": "admin/editor.sales-channel-banner.images.title",
       "items": {
         "properties": {
           "image": {
             "$ref": "app:vtex.native-types#/definitions/url",
             "default": "",
-            "title": "admin/editor.image-list.images.image.title",
+            "title": "admin/editor.sales-channel-banner.images.image.title",
             "widget": {
               "ui:widget": "image-uploader"
             }
@@ -92,7 +92,7 @@
           "mobileImage": {
             "$ref": "app:vtex.native-types#/definitions/url",
             "default": "",
-            "title": "admin/editor.image-list.images.mobileImage.title",
+            "title": "admin/editor.sales-channel-banner.images.mobileImage.title",
             "widget": {
               "ui:widget": "image-uploader"
             }
@@ -100,10 +100,10 @@
           "description": {
             "$ref": "app:vtex.native-types#/definitions/text",
             "default": "",
-            "title": "admin/editor.image-list.images.description.title"
+            "title": "admin/editor.sales-channel-banner.images.description.title"
           },
           "title": {
-            "title": "admin/editor.image-list.images.title.title",
+            "title": "admin/editor.sales-channel-banner.images.title.title",
             "$ref": "app:vtex.native-types#/definitions/text",
             "default": ""
           },
@@ -113,14 +113,14 @@
             "$ref": "app:vtex.native-types#/definitions/link"
           },
           "width": {
-            "title": "admin/editor.image-list.images.width.title",
-            "description": "admin/editor.image-list.images.width.description",
+            "title": "admin/editor.sales-channel-banner.images.width.title",
+            "description": "admin/editor.sales-channel-banner.images.width.description",
             "$ref": "app:vtex.native-types#/definitions/text",
             "default": "100%"
           },
           "salesChannels": {
-            "title": "admin/editor.image-list.images.salesChannels.title",
-            "description": "admin/editor.image-list.images.salesChannels.description",
+            "title": "admin/editor.sales-channel-banner.images.salesChannels.title",
+            "description": "admin/editor.sales-channel-banner.images.salesChannels.description",
             "$ref": "app:vtex.native-types#/definitions/text",
             "default": ""
           },

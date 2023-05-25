@@ -1,54 +1,54 @@
 import { defineMessages } from 'react-intl'
 
 const IMAGE_LIST_MESSAGES = defineMessages({
-  title: { id: 'admin/editor.image-list.title' },
+  title: { id: 'admin/editor.sales-channel-banner.title' },
   description: {
-    id: 'admin/editor.image-list.description',
+    id: 'admin/editor.sales-channel-banner.description',
   },
   imagesImageTitle: {
-    id: 'admin/editor.image-list.images.image.title',
+    id: 'admin/editor.sales-channel-banner.images.image.title',
   },
   imagesMobileImageTitle: {
-    id: 'admin/editor.image-list.images.mobileImage.title',
+    id: 'admin/editor.sales-channel-banner.images.mobileImage.title',
   },
   imagesImageDescription: {
-    id: 'admin/editor.image-list.images.description.title',
+    id: 'admin/editor.sales-channel-banner.images.description.title',
   },
   imagesImageAttributeTitle: {
-    id: 'admin/editor.image-list.images.title.title',
+    id: 'admin/editor.sales-channel-banner.images.title.title',
   },
   imagesImageLinkUrl: {
-    id: 'admin/editor.image-list.images.link.url.title',
+    id: 'admin/editor.sales-channel-banner.images.link.url.title',
   },
   imagesImageLinkOpenNewTab: {
-    id: 'admin/editor.image-list.images.link.openNewTab.title',
+    id: 'admin/editor.sales-channel-banner.images.link.openNewTab.title',
   },
   imagesImageLinkNoFollow: {
-    id: 'admin/editor.image-list.images.link.noFollow.title',
+    id: 'admin/editor.sales-channel-banner.images.link.noFollow.title',
   },
   imagesImageLinkTitle: {
-    id: 'admin/editor.image-list.images.link.title.title',
+    id: 'admin/editor.sales-channel-banner.images.link.title.title',
   },
   imagesTitle: {
-    id: 'admin/editor.image-list.images.title',
+    id: 'admin/editor.sales-channel-banner.images.title',
   },
   heightTitle: {
-    id: 'admin/editor.image-list.height.title',
+    id: 'admin/editor.sales-channel-banner.height.title',
   },
   heightMobileTitle: {
-    id: 'admin/editor.image-list.heightMobile.title',
+    id: 'admin/editor.sales-channel-banner.heightMobile.title',
   },
   autoplayTitle: {
-    id: 'admin/editor.image-list.autoplay.title',
+    id: 'admin/editor.sales-channel-banner.autoplay.title',
   },
   autoplayDescription: {
-    id: 'admin/editor.image-list.autoplay.description',
+    id: 'admin/editor.sales-channel-banner.autoplay.description',
   },
   widthTitle: {
-    id: 'admin/editor.image-list.images.width.title',
+    id: 'admin/editor.sales-channel-banner.images.width.title',
   },
   widthDescription: {
-    id: 'admin/editor.image-list.images.width.description',
+    id: 'admin/editor.sales-channel-banner.images.width.description',
   },
   analyticsTitle: {
     id: 'admin/editor.image.analytics.title',
