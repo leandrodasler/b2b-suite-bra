@@ -37,4 +37,7 @@ Now, you are able to use all blocks exported by the `b2b-suite-bra` app. Check o
 | `b2b-context` | Provides context information for B2B specific features. |
 | `b2b-last-orders` | Renders a list of the B2B customer's last orders in a B2B context. |
 | `b2b-representative-area` | Renders the B2B representative area, where a B2B representative can view and manage customer information. |
-| `b2b-switch-organizations` | Allows B2B users to switch between organizations that they have access to. |
+| `b2b-switch-organizations` | Allows B2B users to switch between organizations that they have access to. (*Deprecated: `b2b-user-widget` from `vtex.b2b-organizations` implemented this feature. Use it instead.*) |
+|  `skeleton` | Custom skeleton for loading states |
+| `spinner` | Imported Spinner from [VTEX Styleguide](https://styleguide.vtex.com/) for loading states |
+| `sales-channel-banner` | Slider of conditionally displayed banners according to the organization sales channel. |
