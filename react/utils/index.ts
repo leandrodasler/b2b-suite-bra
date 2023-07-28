@@ -55,6 +55,7 @@ export interface User {
   b2bUserId?: string
   organization?: string
   costCenter?: string
+  authUserToken?: string
 }
 
 export const commonFetchOptions: RequestInit = {
@@ -65,17 +66,75 @@ export const commonFetchOptions: RequestInit = {
   credentials: 'same-origin',
 }
 
+export async function getUser(): Promise<User> {
+  let session
+  let count = 0
+
+  const {
+    __RUNTIME__: { account },
+  } = window
+
+  while (!session?.namespaces['storefront-permissions'] && count <= 4) {
+    count++
+    const sessionResponse = await fetch(
+      '/api/sessions?items=*',
+      commonFetchOptions
+    )
+    session = await sessionResponse.json()
+    if (!session?.namespaces['storefront-permissions']) {
+      await new Promise(resolve => setTimeout(resolve, 250))
+    }
+  }
+
+  const authUserToken =
+    session?.namespaces['cookie']?.[`VtexIdclientAutCookie_${account}`]?.value
+  const b2bUserId = session?.namespaces['storefront-permissions']?.userId?.value
+  const organization =
+    session?.namespaces['storefront-permissions']?.organization?.value
+  const costCenter =
+    session?.namespaces['storefront-permissions']?.costcenter?.value
+
+  return {
+    ...session?.namespaces?.profile,
+    b2bUserId,
+    organization,
+    costCenter,
+    authUserToken,
+  }
+}
+
+async function getAuthorizedFetchOptions() {
+  const user = await getUser()
+
+  // eslint-disable-next-line no-console
+  console.log('orders from user:', user)
+
+  return {
+    ...commonFetchOptions,
+    headers: {
+      ...commonFetchOptions.headers,
+      Authorization: `VtexIdclientAutCookie ${user.authUserToken}`,
+      VtexIdclientAutCookie: user.authUserToken ?? '',
+    },
+  }
+}
+
 export const getOrders = async (limit: number): Promise<Order[]> => {
+  const authorizedFetchOptions = await getAuthorizedFetchOptions()
+
   const ordersResponse = await fetch(
-    `/b2b/oms/user/orders/?page=1&per_page=${limit}`,
-    commonFetchOptions
+    `/_v/private/b2b/oms/user/orders/?page=1&per_page=${limit}`,
+    authorizedFetchOptions
   )
 
   const orders: Order[] = (await ordersResponse.json())?.list || []
 
   const ordersDetailsResponse = await Promise.all(
     orders.map(order =>
-      fetch(`/b2b/oms/user/orders/${order.orderId}`, commonFetchOptions)
+      fetch(
+        `/_v/private/b2b/oms/user/orders/${order.orderId}`,
+        authorizedFetchOptions
+      )
     )
   )
 
@@ -132,16 +191,21 @@ export const getMonthlyOrders = async (): Promise<{
   monthlyOrdersDistinctClientAmount: number
   allOrdersDistinctClientAmount: number
 }> => {
+  // eslint-disable-next-line no-console
+  console.log('getMonthlyOrders')
+
+  const authorizedFetchOptions = await getAuthorizedFetchOptions()
+
   const omsPvtOrdersResponse = await fetch(
     `/api/oms/pvt/orders/?creationDate,desc&f_creationDate=creationDate:[${getFirstDay()} TO ${getLastDay()}]&page=1&per_page=99999`,
-    commonFetchOptions
+    authorizedFetchOptions
   )
 
   const omsPvtOrders: Order[] = (await omsPvtOrdersResponse.json())?.list || []
 
   const allOrdersResponse = await fetch(
-    `/b2b/oms/user/orders/?page=1&per_page=99999`,
-    commonFetchOptions
+    `/_v/private/b2b/oms/user/orders/?page=1&per_page=99999`,
+    authorizedFetchOptions
   )
   const allOrders: Order[] = (await allOrdersResponse.json())?.list || []
   const allOrdersDistinctClientAmount = getDistintClientAmount(allOrders)
@@ -252,36 +316,6 @@ export type OrderStatusType = keyof typeof ORDER_STATUS_BACKGROUND_MAP
 
 export const getOrderStatusTypeTag = (status: OrderStatusType): string =>
   ORDER_STATUS_BACKGROUND_MAP[status] || 'warning'
-
-export async function getUser(): Promise<User> {
-  let session
-  let count = 0
-
-  while (!session?.namespaces['storefront-permissions'] && count <= 4) {
-    count++
-    const sessionResponse = await fetch(
-      '/api/sessions?items=*',
-      commonFetchOptions
-    )
-    session = await sessionResponse.json()
-    if (!session?.namespaces['storefront-permissions']) {
-      await new Promise(resolve => setTimeout(resolve, 250))
-    }
-  }
-
-  const b2bUserId = session?.namespaces['storefront-permissions']?.userId?.value
-  const organization =
-    session?.namespaces['storefront-permissions']?.organization?.value
-  const costCenter =
-    session?.namespaces['storefront-permissions']?.costcenter?.value
-
-  return {
-    ...session?.namespaces?.profile,
-    b2bUserId,
-    organization,
-    costCenter,
-  }
-}
 
 // export async function getUser(): Promise<User> {
 //   const sessionResponse = await fetch(

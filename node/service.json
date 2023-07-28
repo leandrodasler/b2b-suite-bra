@@ -11,6 +11,10 @@
   "maxReplicas": 80,
   "workers": 1,
   "routes": {
+    "orders": {
+      "path": "/_v/orders",
+      "public": true
+    },
     "status": {
       "path": "/_v/status/:code",
       "public": true
