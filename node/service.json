@@ -11,16 +11,18 @@
   "maxReplicas": 80,
   "workers": 1,
   "routes": {
-    "orders": {
-      "path": "/_v/orders",
-      "public": true
+    "monthlyOrders": {
+      "path": "/_v/monthly-orders",
+      "public": true,
+      "policies": [
+        {
+          "effect": "allow",
+          "actions": ["get", "options"]
+        }
+      ]
     },
     "status": {
       "path": "/_v/status/:code",
-      "public": true
-    },
-    "switchProfile": {
-      "path": "/_v/b2b-suite-bra/session/transform",
       "public": true
     }
   }

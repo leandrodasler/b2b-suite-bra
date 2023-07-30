@@ -1,10 +1,15 @@
-/* eslint-disable no-console */
 import type { IOContext, InstanceOptions } from '@vtex/api'
-import { ExternalClient } from '@vtex/api'
+import { JanusClient } from '@vtex/api'
 
-export default class OMSClient extends ExternalClient {
+import { getFirstDayInMonth, getLastDayInMonth } from '../helpers'
+
+export default class OMSClient extends JanusClient {
+  private readonly baseUrl = '/api/oms/pvt/orders'
+  private apiKey = ''
+  private apiToken = ''
+
   constructor(context: IOContext, options?: InstanceOptions) {
-    super(`http://${context.account}.myvtex.com/api/oms/pvt/orders`, context, {
+    super(context, {
       ...options,
       params: {
         ...options?.params,
@@ -14,25 +19,38 @@ export default class OMSClient extends ExternalClient {
         ...options?.headers,
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        VtexIdclientAutCookie:
-          context.storeUserAuthToken ?? context.authToken ?? '',
       },
     })
   }
 
-  public async getOrdersByLimit(limit: number, authCookie: string) {
-    console.log('authCookie', authCookie)
-    // console.log('context.segmentToken', this.context.segmentToken)
-    // console.log('context.sessionToken', this.context.sessionToken)
+  public setApiSettings(apiKey: string, apiToken: string) {
+    this.apiKey = apiKey
+    this.apiToken = apiToken
+  }
 
-    if (super.options?.headers) {
-      super.options.headers.VtexIdclientAutCookie = authCookie
+  private getAdditionalOptionsRequestConfig() {
+    return {
+      headers: {
+        ...this.options?.headers,
+        'X-VTEX-API-AppKey': this.apiKey,
+        'X-VTEX-API-AppToken': this.apiToken,
+      },
     }
+  }
 
-    return this.http.get(`/?page=1&per_page=${limit}`)
+  public async getMonthlyOrders() {
+    return this.http.get(
+      `${
+        this.baseUrl
+      }/?creationDate,desc&f_creationDate=creationDate:[${getFirstDayInMonth()} TO ${getLastDayInMonth()}]&page=1&per_page=99999`,
+      this.getAdditionalOptionsRequestConfig()
+    )
   }
 
   public async getOrder(id: string) {
-    return this.http.get(`/${id}`)
+    return this.http.get(
+      `${this.baseUrl}/${id}`,
+      this.getAdditionalOptionsRequestConfig()
+    )
   }
 }

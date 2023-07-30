@@ -103,28 +103,10 @@ export async function getUser(): Promise<User> {
   }
 }
 
-async function getAuthorizedFetchOptions() {
-  const user = await getUser()
-
-  // eslint-disable-next-line no-console
-  console.log('orders from user:', user)
-
-  return {
-    ...commonFetchOptions,
-    headers: {
-      ...commonFetchOptions.headers,
-      Authorization: `VtexIdclientAutCookie ${user.authUserToken}`,
-      VtexIdclientAutCookie: user.authUserToken ?? '',
-    },
-  }
-}
-
 export const getOrders = async (limit: number): Promise<Order[]> => {
-  const authorizedFetchOptions = await getAuthorizedFetchOptions()
-
   const ordersResponse = await fetch(
     `/_v/private/b2b/oms/user/orders/?page=1&per_page=${limit}`,
-    authorizedFetchOptions
+    commonFetchOptions
   )
 
   const orders: Order[] = (await ordersResponse.json())?.list || []
@@ -133,7 +115,7 @@ export const getOrders = async (limit: number): Promise<Order[]> => {
     orders.map(order =>
       fetch(
         `/_v/private/b2b/oms/user/orders/${order.orderId}`,
-        authorizedFetchOptions
+        commonFetchOptions
       )
     )
   )
@@ -148,26 +130,6 @@ export const getOrders = async (limit: number): Promise<Order[]> => {
         ...ordersDetails[index],
       }))
     : orders
-}
-
-const getFirstDay = () => {
-  const now = new Date()
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0)
-  return firstDay.toISOString()
-}
-
-const getLastDay = () => {
-  const now = new Date()
-  const lastDay = new Date(
-    now.getFullYear(),
-    now.getMonth() + 1,
-    0,
-    23,
-    59,
-    59,
-    999
-  )
-  return lastDay.toISOString()
 }
 
 const getDistintClientAmount = (orders: Order[]) => {
@@ -194,18 +156,20 @@ export const getMonthlyOrders = async (): Promise<{
   // eslint-disable-next-line no-console
   console.log('getMonthlyOrders')
 
-  const authorizedFetchOptions = await getAuthorizedFetchOptions()
+  const {
+    __RUNTIME__: { workspace },
+  } = window
 
   const omsPvtOrdersResponse = await fetch(
-    `/api/oms/pvt/orders/?creationDate,desc&f_creationDate=creationDate:[${getFirstDay()} TO ${getLastDay()}]&page=1&per_page=99999`,
-    authorizedFetchOptions
+    `/_v/monthly-orders?workspace=${workspace}`,
+    commonFetchOptions
   )
 
   const omsPvtOrders: Order[] = (await omsPvtOrdersResponse.json())?.list || []
 
   const allOrdersResponse = await fetch(
     `/_v/private/b2b/oms/user/orders/?page=1&per_page=99999`,
-    authorizedFetchOptions
+    commonFetchOptions
   )
   const allOrders: Order[] = (await allOrdersResponse.json())?.list || []
   const allOrdersDistinctClientAmount = getDistintClientAmount(allOrders)
@@ -316,28 +280,6 @@ export type OrderStatusType = keyof typeof ORDER_STATUS_BACKGROUND_MAP
 
 export const getOrderStatusTypeTag = (status: OrderStatusType): string =>
   ORDER_STATUS_BACKGROUND_MAP[status] || 'warning'
-
-// export async function getUser(): Promise<User> {
-//   const sessionResponse = await fetch(
-//     '/api/sessions?items=*',
-//     commonFetchOptions
-//   )
-
-//   const session = await sessionResponse.json()
-
-//   const b2bUserId = session?.namespaces['storefront-permissions']?.userId?.value
-//   const organization =
-//     session?.namespaces['storefront-permissions']?.organization?.value
-//   const costCenter =
-//     session?.namespaces['storefront-permissions']?.costcenter?.value
-
-//   return {
-//     ...session?.namespaces?.profile,
-//     b2bUserId,
-//     organization,
-//     costCenter,
-//   }
-// }
 
 export const useSessionUser = (): {
   user: User | undefined

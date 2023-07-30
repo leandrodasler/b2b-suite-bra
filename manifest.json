@@ -37,9 +37,7 @@
     "vtex.storefront-permissions": "1.x",
     "vtex.store-image": "0.x"
   },
-  "registries": [
-    "smartcheckout"
-  ],
+  "registries": ["smartcheckout"],
   "policies": [
     {
       "name": "colossus-fire-event"
@@ -128,5 +126,21 @@
       }
     }
   ],
+  "settingsSchema": {
+    "title": "VTEX API Settings",
+    "type": "object",
+    "properties": {
+      "X-VTEX-API-AppKey": {
+        "type": "string"
+      },
+      "X-VTEX-API-AppToken": {
+        "type": "string"
+      }
+    }
+  },
+  "billingOptions": {
+    "type": "free",
+    "availableCountries": ["*"]
+  },
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
