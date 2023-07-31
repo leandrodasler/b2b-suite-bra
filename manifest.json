@@ -5,7 +5,7 @@
   "title": "B2B Suite Brasil",
   "description": "Provides blocks for B2B facilities in the storefront",
   "scripts": {
-    "postreleasy": "vtex publish"
+    "postreleasy": "vtex publish --force"
   },
   "builders": {
     "react": "3.x",
@@ -37,9 +37,7 @@
     "vtex.storefront-permissions": "1.x",
     "vtex.store-image": "0.x"
   },
-  "registries": [
-    "smartcheckout"
-  ],
+  "registries": ["smartcheckout"],
   "policies": [
     {
       "name": "colossus-fire-event"
@@ -142,9 +140,7 @@
   },
   "billingOptions": {
     "type": "free",
-    "availableCountries": [
-      "*"
-    ]
+    "availableCountries": ["*"]
   },
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
