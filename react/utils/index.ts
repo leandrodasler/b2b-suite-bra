@@ -58,6 +58,19 @@ export interface User {
   authUserToken?: string
 }
 
+declare global {
+  interface Window {
+    __RUNTIME__: {
+      workspace: string
+      account: string
+    }
+  }
+}
+
+const {
+  __RUNTIME__: { workspace, account },
+} = window
+
 export const commonFetchOptions: RequestInit = {
   headers: {
     Accept: 'application/json',
@@ -69,10 +82,6 @@ export const commonFetchOptions: RequestInit = {
 export async function getUser(): Promise<User> {
   let session
   let count = 0
-
-  const {
-    __RUNTIME__: { account },
-  } = window
 
   while (!session?.namespaces['storefront-permissions'] && count <= 4) {
     count++
@@ -105,16 +114,16 @@ export async function getUser(): Promise<User> {
 
 export const getOrders = async (limit: number): Promise<Order[]> => {
   const ordersResponse = await fetch(
-    `/_v/private/b2b/oms/user/orders/?page=1&per_page=${limit}`,
+    `/_v/private/b2b-suite-bra/orders/?page=1&per_page=${limit}&workspace=${workspace}`,
     commonFetchOptions
   )
 
   const orders: Order[] = (await ordersResponse.json())?.list || []
 
   const ordersDetailsResponse = await Promise.all(
-    orders.map(order =>
+    orders.map(async order =>
       fetch(
-        `/_v/private/b2b/oms/user/orders/${order.orderId}`,
+        `/_v/private/b2b-suite-bra/orders/${order.orderId}?workspace=${workspace}`,
         commonFetchOptions
       )
     )
@@ -156,19 +165,15 @@ export const getMonthlyOrders = async (): Promise<{
   // eslint-disable-next-line no-console
   console.log('getMonthlyOrders')
 
-  const {
-    __RUNTIME__: { workspace },
-  } = window
-
   const omsPvtOrdersResponse = await fetch(
-    `/_v/monthly-orders?workspace=${workspace}`,
+    `/_v/private/b2b-suite-bra/monthly-orders?workspace=${workspace}`,
     commonFetchOptions
   )
 
   const omsPvtOrders: Order[] = (await omsPvtOrdersResponse.json())?.list || []
 
   const allOrdersResponse = await fetch(
-    `/_v/private/b2b/oms/user/orders/?page=1&per_page=99999`,
+    `/_v/private/b2b-suite-bra/orders/?page=1&per_page=99999&workspace=${workspace}`,
     commonFetchOptions
   )
   const allOrders: Order[] = (await allOrdersResponse.json())?.list || []
@@ -345,18 +350,8 @@ export const useFormattedStatus = () => {
   return formatStatus
 }
 
-declare global {
-  interface Window {
-    __RUNTIME__: Record<string, unknown>
-  }
-}
-
 export async function getGoal(organizationId: string): Promise<number> {
   try {
-    const {
-      __RUNTIME__: { account },
-    } = window
-
     const response = await fetch(
       `https://b2bgoals--${account}.myvtex.com/_v/b2b-sales-representative-quotes/goal/${organizationId}`,
       { ...commonFetchOptions, credentials: undefined }

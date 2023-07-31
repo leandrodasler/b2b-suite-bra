@@ -15,11 +15,6 @@ export default class OMSClient extends JanusClient {
         ...options?.params,
         workspace: context.workspace,
       },
-      headers: {
-        ...options?.headers,
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
     })
   }
 
@@ -38,19 +33,23 @@ export default class OMSClient extends JanusClient {
     }
   }
 
+  private async get(url: string) {
+    return this.http.get(url, this.getAdditionalOptionsRequestConfig())
+  }
+
   public async getMonthlyOrders() {
-    return this.http.get(
+    return this.get(
       `${
         this.baseUrl
-      }/?creationDate,desc&f_creationDate=creationDate:[${getFirstDayInMonth()} TO ${getLastDayInMonth()}]&page=1&per_page=99999`,
-      this.getAdditionalOptionsRequestConfig()
+      }/?orderBy=creationDate,desc&f_creationDate=creationDate:[${getFirstDayInMonth()} TO ${getLastDayInMonth()}]&page=1&per_page=99999`
     )
   }
 
+  public async search(query: string) {
+    return this.get(`${this.baseUrl}?${query}`)
+  }
+
   public async getOrder(id: string) {
-    return this.http.get(
-      `${this.baseUrl}/${id}`,
-      this.getAdditionalOptionsRequestConfig()
-    )
+    return this.get(`${this.baseUrl}/${id}`)
   }
 }

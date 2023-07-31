@@ -3,6 +3,9 @@ import { LRUCache, Service, method } from '@vtex/api'
 
 import { Clients } from './clients'
 import getMonthlyOrders from './middlewares/getMonthlyOrders'
+import getOrder from './middlewares/getOrder'
+import getOrders from './middlewares/getOrders'
+import setApiSettings from './middlewares/setApiSettings'
 
 const TIMEOUT_MS = 3 * 1000
 const CONCURRENCY = 10
@@ -29,7 +32,13 @@ export default new Service({
   clients,
   routes: {
     monthlyOrders: method({
-      GET: getMonthlyOrders,
+      GET: [setApiSettings, getMonthlyOrders],
+    }),
+    orders: method({
+      GET: [setApiSettings, getOrders],
+    }),
+    order: method({
+      GET: [setApiSettings, getOrder],
     }),
   },
 })
