@@ -5,7 +5,7 @@ import { ForbiddenError, UserInputError } from '@vtex/api'
 import type { Clients } from '../clients'
 import { checkPermissionAgainstOrder, getUserAndPermissions } from '../helpers'
 
-const getOrder = async (ctx: ServiceContext<Clients>) => {
+const getOrder = async (context: ServiceContext<Clients>) => {
   const {
     vtex: {
       route: {
@@ -13,7 +13,7 @@ const getOrder = async (ctx: ServiceContext<Clients>) => {
       },
     },
     clients: { omsClient },
-  } = ctx
+  } = context
 
   if (!orderId) {
     throw new UserInputError('Order ID is required')
@@ -22,7 +22,7 @@ const getOrder = async (ctx: ServiceContext<Clients>) => {
   const order = await omsClient.getOrder(String(orderId))
 
   const { permissions, authEmail, profileEmail, organizationId, costCenterId } =
-    await getUserAndPermissions(ctx)
+    await getUserAndPermissions(context)
 
   const permitted = checkPermissionAgainstOrder({
     permissions,
@@ -37,11 +37,15 @@ const getOrder = async (ctx: ServiceContext<Clients>) => {
     throw new ForbiddenError('Access denied')
   }
 
-  ctx.set('Content-Type', 'application/json')
-  ctx.set('Cache-Control', 'no-cache, no-store')
+  context.set('Access-Control-Allow-Origin', '*')
+  context.set('Access-Control-Allow-Headers', '*')
+  context.set('Access-Control-Allow-Credentials', 'true')
+  context.set('Access-Control-Allow-Methods', '*')
+  context.set('Content-Type', 'application/json')
+  // ctx.set('Cache-Control', 'no-cache, no-store')
 
-  ctx.response.body = order
-  ctx.response.status = 200
+  context.response.status = 200
+  context.response.body = order
 }
 
 export default getOrder

@@ -3,14 +3,14 @@ import type { ServiceContext } from '@vtex/api'
 import type { Clients } from '../clients'
 import { getUserAndPermissions } from '../helpers'
 
-const getOrders = async (ctx: ServiceContext<Clients>) => {
+const getOrders = async (context: ServiceContext<Clients>) => {
   const {
     clients: { omsClient },
     request: { querystring },
-  } = ctx
+  } = context
 
   const { authEmail, organizationId, costCenterId, permissions } =
-    await getUserAndPermissions(ctx)
+    await getUserAndPermissions(context)
 
   const filterByPermission = (userPermissions: string[]) => {
     if (userPermissions.includes('all-orders')) {
@@ -43,10 +43,14 @@ const getOrders = async (ctx: ServiceContext<Clients>) => {
 
   const orders = await omsClient.search(query)
 
-  ctx.set('Content-Type', 'application/json')
-  ctx.set('Cache-Control', 'no-cache, no-store')
-  ctx.response.body = orders
-  ctx.response.status = 200
+  context.set('Access-Control-Allow-Origin', '*')
+  context.set('Access-Control-Allow-Headers', '*')
+  context.set('Access-Control-Allow-Credentials', 'true')
+  context.set('Access-Control-Allow-Methods', '*')
+  context.set('Content-Type', 'application/json')
+  // ctx.set('Cache-Control', 'no-cache, no-store')
+  context.response.status = 200
+  context.response.body = orders
 }
 
 export default getOrders

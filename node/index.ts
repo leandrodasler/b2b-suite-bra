@@ -9,7 +9,7 @@ import setApiSettings from './middlewares/setApiSettings'
 
 const TIMEOUT_MS = 4 * 1000
 const CONCURRENCY = 10
-const memoryCache = new LRUCache<string, never>({ max: 5000 })
+const memoryCache = new LRUCache<string, any>({ max: 5000 })
 
 const clients: ClientsConfig<Clients> = {
   implementation: Clients,

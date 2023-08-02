@@ -1,4 +1,4 @@
-import type { IOContext, InstanceOptions } from '@vtex/api'
+import type { IOContext, InstanceOptions, RequestConfig } from '@vtex/api'
 import { JanusClient } from '@vtex/api'
 
 import { getFirstDayInMonth, getLastDayInMonth } from '../helpers'
@@ -23,8 +23,9 @@ export default class OMSClient extends JanusClient {
     this.apiToken = apiToken
   }
 
-  private getAdditionalOptionsRequestConfig() {
+  private getAdditionalOptionsRequestConfig(): RequestConfig {
     return {
+      forceMaxAge: 5000,
       headers: {
         ...this.options?.headers,
         'X-VTEX-API-AppKey': this.apiKey,
