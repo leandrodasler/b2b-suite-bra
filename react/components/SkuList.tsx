@@ -11,10 +11,20 @@ enum Device {
   desktop = 'desktop',
 }
 
+const getSkuDisplaySequence = (item: Item) =>
+  +(
+    item.variations.find(variation => variation.name === 'skuDisplaySequence')
+      ?.values?.[0] ?? 0
+  )
+
+const compareItemsSequence = (a: Item, b: Item) =>
+  getSkuDisplaySequence(a) - getSkuDisplaySequence(b)
+
 const SkuListComponent = React.memo(({ device }: { device: Device }) => {
   const valuesFromContext = useContext(ProductContext)
   const items: Item[] = pathOr([], ['product', 'items'], valuesFromContext)
   const product: Product | undefined = path(['product'], valuesFromContext)
+  const sortedItems = [...items].sort(compareItemsSequence)
 
   const renderContent = (item: Item) => {
     switch (device) {
@@ -42,7 +52,7 @@ const SkuListComponent = React.memo(({ device }: { device: Device }) => {
 
   return (
     <div className="mw9 center pa3">
-      {items.map((item: Item) => renderContent(item))}
+      {sortedItems.map((item: Item) => renderContent(item))}
     </div>
   )
 })
