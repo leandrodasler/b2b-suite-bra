@@ -27,11 +27,6 @@ interface MonthlyOrders {
   allOrdersDistinctClientAmount: number
 }
 
-interface MonthlyOrdersFromLocalStorage extends MonthlyOrders {
-  expireAt: number
-  goal: number
-}
-
 function B2BRepresentativeArea(
   props: RepresentativeAreaProps = {
     individualGoal: 0,
@@ -40,7 +35,8 @@ function B2BRepresentativeArea(
     customersOrdersMonth: 0,
   }
 ) {
-  const [loading, setLoading] = useState(true)
+  const [loadingMonthlyOrders, setLoadingMonthlyOrders] = useState(true)
+  const [loadingGoal, setLoadingGoal] = useState(true)
   const { data, setData } = React.useContext(B2BContext)
   const handles = useCssHandles(CSS_HANDLES)
   const [goal, setGoal] = useState(0)
@@ -49,43 +45,20 @@ function B2BRepresentativeArea(
   const representativeArea = data?.representativeArea
   const user = data?.user
   const organization = data?.user?.organization
-  const costCenter = data?.user?.costCenter
 
   useEffect(() => {
-    if (organization && user) {
-      const localStorageKey = `monthlyOrders-${user.b2bUserId}`
-      const localStorageMonthlyOrders = JSON.parse(
-        localStorage.getItem(localStorageKey) ?? 'null'
-      ) as MonthlyOrdersFromLocalStorage
+    if (organization) {
+      getGoal(organization).then(goal => {
+        setGoal(goal)
+        setLoadingGoal(false)
+      })
 
-      if (localStorageMonthlyOrders?.expireAt > Date.now()) {
-        setMonthlyOrders(localStorageMonthlyOrders)
-        setGoal(localStorageMonthlyOrders.goal)
-        setLoading(false)
-      } else {
-        getGoal(organization).then(goal => {
-          setGoal(goal)
-
-          getMonthlyOrders().then(orders => {
-            setMonthlyOrders(orders)
-
-            const expireAt = Date.now() + 1000 * 60 * 5
-
-            localStorage.setItem(
-              localStorageKey,
-              JSON.stringify({
-                expireAt,
-                goal,
-                ...orders,
-              })
-            )
-
-            setLoading(false)
-          })
-        })
-      }
+      getMonthlyOrders().then(orders => {
+        setMonthlyOrders(orders)
+        setLoadingMonthlyOrders(false)
+      })
     }
-  }, [organization, costCenter, user])
+  }, [organization])
 
   useEffect(() => {
     if (monthlyOrders) {
@@ -129,7 +102,9 @@ function B2BRepresentativeArea(
     representativeArea,
   ])
 
-  if (loading) return <B2BRepresentativeAreaSkeleton />
+  if (loadingMonthlyOrders || loadingGoal) {
+    return <B2BRepresentativeAreaSkeleton />
+  }
 
   return (
     <>

@@ -71,7 +71,6 @@ function B2BLastOrders({
       .catch(e => {
         console.error('Error retrieving orders from organization: ', e)
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [limit, setData])
 
   return (

@@ -1,15 +1,25 @@
-import type { ClientsConfig } from '@vtex/api'
+import type {
+  Cached,
+  ClientsConfig,
+  RecorderState,
+  ServiceContext,
+} from '@vtex/api'
 import { LRUCache, Service, method } from '@vtex/api'
+import type {
+  ListOrdersItem,
+  ListOrdersResponse,
+  OrderDetailResponse,
+} from '@vtex/clients'
 
 import { Clients } from './clients'
 import getMonthlyOrders from './middlewares/getMonthlyOrders'
 import getOrder from './middlewares/getOrder'
 import getOrders from './middlewares/getOrders'
-import setApiSettings from './middlewares/setApiSettings'
+import getPermissions from './middlewares/getPermissions'
 
 const TIMEOUT_MS = 4 * 1000
 const CONCURRENCY = 10
-const memoryCache = new LRUCache<string, any>({ max: 5000 })
+const memoryCache = new LRUCache<string, Cached>({ max: 5000 })
 
 const clients: ClientsConfig<Clients> = {
   implementation: Clients,
@@ -26,17 +36,52 @@ const clients: ClientsConfig<Clients> = {
   },
 }
 
+declare global {
+  interface UserPermissions {
+    checkUserPermission: {
+      permissions?: string[]
+    }
+  }
+
+  interface UserAndPermissions {
+    authEmail: string
+    profileEmail: string
+    organizationId: string
+    costCenterId: string
+    permissions?: string[]
+  }
+
+  interface OrdersItem extends ListOrdersItem {
+    paymentApprovedDate?: Date
+  }
+
+  interface Orders extends ListOrdersResponse {
+    list: OrdersItem[]
+  }
+
+  type Order = OrderDetailResponse
+
+  interface State extends RecorderState {
+    userAndPermissions: UserAndPermissions
+    permissionQuery: string
+  }
+
+  type Context = ServiceContext<Clients, State>
+
+  type Next = () => Promise<void>
+}
+
 export default new Service({
   clients,
   routes: {
     monthlyOrders: method({
-      GET: [setApiSettings, getMonthlyOrders],
+      GET: [getPermissions, getMonthlyOrders],
     }),
     orders: method({
-      GET: [setApiSettings, getOrders],
+      GET: [getPermissions, getOrders],
     }),
     order: method({
-      GET: [setApiSettings, getOrder],
+      GET: [getPermissions, getOrder],
     }),
   },
 })

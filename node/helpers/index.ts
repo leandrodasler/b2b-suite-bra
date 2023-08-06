@@ -3,6 +3,16 @@ import { ForbiddenError } from '@vtex/api'
 
 import type { Clients } from '../clients'
 
+export const getPastYear = () => {
+  const pastYear = new Date()
+
+  pastYear.setDate(pastYear.getDate() - 365)
+
+  return pastYear.toISOString()
+}
+
+export const getNow = () => new Date().toISOString()
+
 export const getFirstDayInMonth = () => {
   const now = new Date()
   const firstDay = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0)
@@ -25,7 +35,9 @@ export const getLastDayInMonth = () => {
   return lastDay.toISOString()
 }
 
-export const getUserAndPermissions = async (ctx: ServiceContext<Clients>) => {
+export const getUserAndPermissions = async (
+  ctx: ServiceContext<Clients>
+): Promise<UserAndPermissions> => {
   const {
     vtex: { storeUserAuthToken, sessionToken, logger },
     clients: { vtexIdClient, session, storefrontPermissionsClient },
@@ -53,9 +65,7 @@ export const getUserAndPermissions = async (ctx: ServiceContext<Clients>) => {
       return null
     })
 
-  const {
-    data: { checkUserPermission },
-  } = await storefrontPermissionsClient
+  const userPermissions = await storefrontPermissionsClient
     .checkUserPermission('vtex.b2b-orders-history@0.x')
     .catch(error => {
       logger.error({
@@ -81,40 +91,22 @@ export const getUserAndPermissions = async (ctx: ServiceContext<Clients>) => {
   return {
     authEmail: authUser?.user,
     profileEmail,
-    permissions: checkUserPermission?.permissions,
+    permissions: userPermissions?.data?.checkUserPermission?.permissions,
     organizationId,
     costCenterId,
   }
 }
 
-interface OrderProfileData {
-  clientProfileData: {
-    email: string
-  }
-  marketingData: {
-    utmCampaign: string
-    utmMedium: string
-  }
-}
+export const checkPermissionAgainstOrder = (
+  userAndPermissions: UserAndPermissions,
+  order: Order
+) => {
+  const { permissions, authEmail, profileEmail, organizationId, costCenterId } =
+    userAndPermissions
 
-export const checkPermissionAgainstOrder = ({
-  permissions,
-  authEmail,
-  profileEmail,
-  organizationId,
-  costCenterId,
-  orderData,
-}: {
-  permissions?: string[]
-  authEmail?: string
-  profileEmail: string
-  organizationId?: string
-  costCenterId?: string
-  orderData: OrderProfileData
-}) => {
   if (
-    authEmail === orderData?.clientProfileData?.email ||
-    profileEmail === orderData?.clientProfileData?.email
+    authEmail === order?.clientProfileData?.email ||
+    profileEmail === order?.clientProfileData?.email
   ) {
     return true
   }
@@ -125,17 +117,34 @@ export const checkPermissionAgainstOrder = ({
 
   if (
     permissions?.includes('organization-orders') &&
-    organizationId === orderData?.marketingData?.utmCampaign
+    organizationId === order?.marketingData?.utmCampaign
   ) {
     return true
   }
 
   if (
     permissions?.includes('costcenter-orders') &&
-    costCenterId === orderData?.marketingData?.utmMedium
+    costCenterId === order?.marketingData?.utmMedium
   ) {
     return true
   }
 
   return false
+}
+
+export const getDistintClientAmount = (orders: Orders) => {
+  const distinctClients = orders.list.reduce(
+    (clients: Record<string, number>, order) => {
+      if (order.clientName in clients) {
+        clients[order.clientName]++
+      } else {
+        clients[order.clientName] = 1
+      }
+
+      return clients
+    },
+    {}
+  )
+
+  return Object.keys(distinctClients).length
 }

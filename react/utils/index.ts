@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { useIntl } from 'react-intl'
 
@@ -26,13 +25,13 @@ export interface Order {
   salesChannel: string
   totalItems: number
   paymentApprovedDate?: Date
-  items: {
+  items: Array<{
     id: string
     seller: string
     imageUrl: string
     name: string
     quantity: number
-  }[]
+  }>
   totalValue: number
 }
 
@@ -112,49 +111,15 @@ export async function getUser(): Promise<User> {
   }
 }
 
-export const getOrders = async (limit: number): Promise<Order[]> => {
+export const getOrders = async (limit: number): Promise<Array<Order>> => {
   const ordersResponse = await fetch(
     `/_v/private/b2b-suite-bra/orders/?page=1&per_page=${limit}&workspace=${workspace}`,
     commonFetchOptions
   )
 
-  const orders: Order[] = (await ordersResponse.json())?.list || []
+  const orders: Order[] = (await ordersResponse.json()) || []
 
-  const ordersDetailsResponse = await Promise.all(
-    orders.map(async order =>
-      fetch(
-        `/_v/private/b2b-suite-bra/orders/${order.orderId}?workspace=${workspace}`,
-        commonFetchOptions
-      )
-    )
-  )
-
-  const ordersDetails: Order[] = await Promise.all(
-    ordersDetailsResponse.map(response => response.json())
-  )
-
-  return ordersDetails?.length === orders?.length
-    ? orders.map((order: Order, index: number) => ({
-        ...order,
-        ...ordersDetails[index],
-      }))
-    : orders
-}
-
-const getDistintClientAmount = (orders: Order[]) => {
-  const distinctClients = orders.reduce(
-    (clients: Record<string, number>, order) => {
-      if (order.clientName in clients) {
-        clients[order.clientName]++
-      } else {
-        clients[order.clientName] = 1
-      }
-      return clients
-    },
-    {}
-  )
-
-  return Object.keys(distinctClients).length
+  return orders
 }
 
 export const getMonthlyOrders = async (): Promise<{
@@ -162,55 +127,12 @@ export const getMonthlyOrders = async (): Promise<{
   monthlyOrdersDistinctClientAmount: number
   allOrdersDistinctClientAmount: number
 }> => {
-  // eslint-disable-next-line no-console
-  console.log('getMonthlyOrders')
-
-  const omsPvtOrdersResponse = await fetch(
+  const monthlyOrdersResponse = await fetch(
     `/_v/private/b2b-suite-bra/monthly-orders?workspace=${workspace}`,
     commonFetchOptions
   )
 
-  const omsPvtOrders: Order[] = (await omsPvtOrdersResponse.json())?.list || []
-
-  const allOrdersResponse = await fetch(
-    `/_v/private/b2b-suite-bra/orders/?page=1&per_page=99999&workspace=${workspace}`,
-    commonFetchOptions
-  )
-  const allOrders: Order[] = (await allOrdersResponse.json())?.list || []
-  const allOrdersDistinctClientAmount = getDistintClientAmount(allOrders)
-
-  // eslint-disable-next-line no-console
-  // console.log('Nº de clientes na carteira:', allOrdersDistinctClientAmount)
-
-  // eslint-disable-next-line no-console
-  // console.log('All orders:', allOrders)
-
-  const monthlyOrders = allOrders.filter(order =>
-    omsPvtOrders.find(omsPvtOrder => omsPvtOrder.orderId === order.orderId)
-  )
-
-  // eslint-disable-next-line no-console
-  // console.log('Orders do mês: ', monthlyOrders)
-
-  const totalValue = monthlyOrders
-    .filter(order => order.paymentApprovedDate)
-    .map(order => order.totalValue)
-    .reduce((a: number, b: number) => a + b, 0)
-
-  const monthlyOrdersDistinctClientAmount = getDistintClientAmount(
-    monthlyOrders
-  )
-  // eslint-disable-next-line no-console
-  // console.log(
-  // 'Nº de clientes que fizeram pedido este mês:',
-  // monthlyOrdersDistinctClientAmount
-  // )
-
-  return {
-    totalValue,
-    monthlyOrdersDistinctClientAmount,
-    allOrdersDistinctClientAmount,
-  }
+  return monthlyOrdersResponse.json()
 }
 
 const getLocale = () =>

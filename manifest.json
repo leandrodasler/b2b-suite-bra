@@ -54,6 +54,12 @@
       "name": "POWER_USER_DS"
     },
     {
+      "name": "OMSViewer"
+    },
+    {
+      "name": "ListOrders"
+    },
+    {
       "name": "outbound-access",
       "attrs": {
         "host": "api.vtex.com",
@@ -112,34 +118,8 @@
         "host": "b2bgoals--{{account}}.myvtex.com",
         "path": "/_v/b2b-sales-representative-quotes/*"
       }
-    },
-    {
-      "name": "outbound-access",
-      "attrs": {
-        "host": "{{account}}.myvtex.com",
-        "path": "/_v/private/b2b/oms/user/orders/*"
-      }
-    },
-    {
-      "name": "outbound-access",
-      "attrs": {
-        "host": "{{account}}.myvtex.com",
-        "path": "/api/oms/pvt/orders/*"
-      }
     }
   ],
-  "settingsSchema": {
-    "title": "VTEX API Settings",
-    "type": "object",
-    "properties": {
-      "X-VTEX-API-AppKey": {
-        "type": "string"
-      },
-      "X-VTEX-API-AppToken": {
-        "type": "string"
-      }
-    }
-  },
   "billingOptions": {
     "type": "free",
     "availableCountries": [
