@@ -44,6 +44,7 @@
   "store/order-status.on-order-completed-ffm": "Pedido concluído (FFM)",
   "store/order-status.approve-payment": "Pagamento aprovado",
   "store/order-status.payment-pending": "Pagamento pendente",
+  "store/order-status.payment-approved": "Pagamento aprovado",
   "store/order-status.request-cancel": "Cancelamento solicitado",
   "store/order-status.canceled": "Cancelado",
   "store/order-status.window-to-change-payment": "Janela para alteração de pagamento",

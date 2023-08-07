@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
-import { useIntl } from 'react-intl'
+import { defineMessages, useIntl } from 'react-intl'
 
 import { commonFetchOptions, workspace } from '.'
 
@@ -12,6 +12,7 @@ const ORDER_STATUS_BACKGROUND_MAP = {
   'on-order-completed-ffm': 'success',
   'approve-payment': 'success',
   'payment-pending': 'warning',
+  'payment-approved': 'success',
   'request-cancel': 'error',
   canceled: 'error',
   'window-to-change-payment': 'warning',
@@ -118,15 +119,54 @@ export const useMonthlyOrders = () => {
 export const getOrderStatusTypeTag = (status: OrderStatusType): string =>
   ORDER_STATUS_BACKGROUND_MAP[status] || 'warning'
 
+const statusMessages = defineMessages({
+  'order-accepted': { id: 'store/order-status.order-accepted' },
+  'order-created': { id: 'store/order-status.order-created' },
+  cancel: { id: 'store/order-status.cancel' },
+  'on-order-completed': { id: 'store/order-status.on-order-completed' },
+  'on-order-completed-ffm': { id: 'store/order-status.on-order-completed-ffm' },
+  'approve-payment': { id: 'store/order-status.approve-payment' },
+  'payment-pending': { id: 'store/order-status.payment-pending' },
+  'payment-approved': { id: 'store/order-status.payment-approved' },
+  'request-cancel': { id: 'store/order-status.request-cancel' },
+  canceled: { id: 'store/order-status.canceled' },
+  'window-to-change-payment': {
+    id: 'store/order-status.window-to-change-payment',
+  },
+  'window-to-change-seller': {
+    id: 'store/order-status.window-to-change-seller',
+  },
+  'waiting-for-authorization': {
+    id: 'store/order-status.waiting-for-authorization',
+  },
+  'waiting-ffmt-authorization': {
+    id: 'store/order-status.waiting-ffmt-authorization',
+  },
+  'waiting-for-manual-authorization': {
+    id: 'store/order-status.waiting-for-manual-authorization',
+  },
+  'authorize-fulfillment': { id: 'store/order-status.authorize-fulfillment' },
+  'window-to-cancel': { id: 'store/order-status.window-to-cancel' },
+  invoice: { id: 'store/order-status.invoice' },
+  invoiced: { id: 'store/order-status.invoiced' },
+  'ready-for-handling': { id: 'store/order-status.ready-for-handling' },
+  'start-handling': { id: 'store/order-status.start-handling' },
+  'cancellation-requested': { id: 'store/order-status.cancellation-requested' },
+  handling: { id: 'store/order-status.handling' },
+  'waiting-for-mkt-authorization': {
+    id: 'store/order-status.waiting-for-mkt-authorization',
+  },
+  'waiting-seller-handling': {
+    id: 'store/order-status.waiting-seller-handling',
+  },
+})
+
 export const useFormattedStatus = () => {
   const intl = useIntl()
 
   const formatStatus = useMemo(
     () => (status: OrderStatusType) =>
-      intl.formatMessage({
-        id: `store/order-status.${status}`,
-        defaultMessage: status,
-      }),
+      intl.formatMessage({ ...statusMessages[status], defaultMessage: status }),
     [intl]
   )
 
