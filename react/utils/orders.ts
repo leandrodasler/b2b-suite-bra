@@ -72,8 +72,7 @@ export const getOrders = async (limit: number): Promise<Order[]> => {
     )
   }
 
-  const orders = await ordersResponse.json()
-  return orders
+  return ordersResponse.json()
 }
 
 export const useLastOrders = (limit: number) => {

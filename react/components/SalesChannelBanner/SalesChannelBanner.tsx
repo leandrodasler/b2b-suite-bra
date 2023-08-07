@@ -72,9 +72,7 @@ const SalesChannelBanner = ({
   ...rest
 }: PropsWithChildren<SalesChannelBannerProps>) => {
   const { device } = useDevice()
-
   const { user, loadingUser } = useContext(B2BContext)
-
   const organizationId = user?.organization
 
   const {
