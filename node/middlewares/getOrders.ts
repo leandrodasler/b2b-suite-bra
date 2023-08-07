@@ -1,6 +1,6 @@
 import { getNow, getPastYear } from '../helpers'
 
-const getOrders = async (context: Context) => {
+const getOrders = async (context: Context, next: Next) => {
   const {
     clients: { omsClient },
     request: { querystring },
@@ -13,26 +13,23 @@ const getOrders = async (context: Context) => {
   const orders = await omsClient.search(query)
 
   const ordersDetails = await Promise.all(
-    orders.list.map(async order => omsClient.getOrder(order.orderId))
+    orders.list.map(order => omsClient.getOrder(order.orderId))
   )
 
   const ordersWithDetails =
     ordersDetails.length === orders.list.length
-      ? orders.list.map((order, index) => ({
+      ? orders.list.map(order => ({
           ...order,
-          ...ordersDetails[index],
+          ...ordersDetails.find(
+            orderDetail => orderDetail.orderId === order.orderId
+          ),
         }))
       : ordersDetails
 
-  context.set('Access-Control-Allow-Origin', '*')
-  context.set('Access-Control-Allow-Headers', '*')
-  context.set('Access-Control-Allow-Credentials', 'true')
-  context.set('Access-Control-Allow-Methods', '*')
-  context.set('Content-Type', 'application/json')
   context.set('Cache-Control', 'max-age=300')
+  context.state.body = ordersWithDetails
 
-  context.status = 200
-  context.body = ordersWithDetails
+  await next()
 }
 
 export default getOrders

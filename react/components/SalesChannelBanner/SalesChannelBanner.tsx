@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, {
   Children,
   PropsWithChildren,
@@ -74,9 +73,7 @@ const SalesChannelBanner = ({
 }: PropsWithChildren<SalesChannelBannerProps>) => {
   const { device } = useDevice()
 
-  const { data } = useContext(B2BContext)
-
-  const { user, loadingUser } = data || {}
+  const { user, loadingUser } = useContext(B2BContext)
 
   const organizationId = user?.organization
 

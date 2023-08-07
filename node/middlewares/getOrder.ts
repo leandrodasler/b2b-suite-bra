@@ -2,7 +2,7 @@ import { ForbiddenError, UserInputError } from '@vtex/api'
 
 import { checkPermissionAgainstOrder } from '../helpers'
 
-const getOrder = async (context: Context) => {
+const getOrder = async (context: Context, next: Next) => {
   const {
     vtex: {
       route: {
@@ -23,15 +23,10 @@ const getOrder = async (context: Context) => {
     throw new ForbiddenError('Access denied')
   }
 
-  context.set('Access-Control-Allow-Origin', '*')
-  context.set('Access-Control-Allow-Headers', '*')
-  context.set('Access-Control-Allow-Credentials', 'true')
-  context.set('Access-Control-Allow-Methods', '*')
-  context.set('Content-Type', 'application/json')
   context.set('Cache-Control', 'max-age=86400')
+  context.state.body = order
 
-  context.status = 200
-  context.body = order
+  await next()
 }
 
 export default getOrder

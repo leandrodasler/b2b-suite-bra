@@ -1,25 +1,23 @@
-/* eslint-disable no-console */
-import React, { useEffect } from 'react'
+import React from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useCssHandles } from 'vtex.css-handles'
 import { OverlayLayout, OverlayTrigger } from 'vtex.overlay-layout'
-import { Button, Card, Link, Spinner, Tag } from 'vtex.styleguide'
+import { Button, Card, Spinner, Tag } from 'vtex.styleguide'
 
-import { B2BContext, B2BContextProps } from '../../context/B2BContext'
+import { formatDate } from '../../utils/dates'
 import {
-  LastOrdersProps,
-  Order,
-  formatDate,
   getOrderStatusTypeTag,
-  getOrders,
   useFormattedStatus,
-} from '../../utils'
+  useLastOrders,
+} from '../../utils/orders'
+import calendarIcon from './calendar-icon.svg'
 import './styles.css'
+import userIcon from './user-icon.svg'
 
-// eslint-disable-next-line
-const userIcon = require('./user-icon.svg') as string
-// eslint-disable-next-line
-const calendarIcon = require('./calendar-icon.svg') as string
+interface LastOrdersProps {
+  limit: number
+  orderDetailsPlacement: string
+}
 
 const CSS_HANDLES = [
   'container',
@@ -37,52 +35,25 @@ function B2BLastOrders({
   limit = DEFAULT_LIMIT,
   orderDetailsPlacement = DEFAULT_PLACEMENT,
 }: LastOrdersProps) {
-  const [orders, setOrders] = React.useState<Order[]>([])
-  const [loading, setLoading] = React.useState(true)
-  const { setData } = React.useContext(B2BContext)
   const handles = useCssHandles(CSS_HANDLES)
   const formatStatus = useFormattedStatus()
+  const { orders, isLoading, error } = useLastOrders(limit)
 
-  useEffect(() => {
-    setLoading(true)
-    getOrders(limit)
-      .then(ordersWithDetails => {
-        setOrders(ordersWithDetails)
-        setData?.((prevData: B2BContextProps) => ({
-          ...prevData,
-          representativeArea: {
-            ...prevData.representativeArea,
-            lastOrder: {
-              ...prevData.representativeArea.lastOrder,
-              value: ordersWithDetails[0]?.orderId ? (
-                <Link
-                  href={`/account#/orders-history/${ordersWithDetails[0]?.orderId}`}
-                >
-                  {ordersWithDetails[0]?.orderId}
-                </Link>
-              ) : (
-                'N/A'
-              ),
-            },
-          },
-        }))
-        setLoading(false)
-      })
-      .catch(e => {
-        console.error('Error retrieving orders from organization: ', e)
-      })
-  }, [limit, setData])
+  if (error) {
+    console.error('Error retrieving orders from organization: ', error)
+    return null
+  }
 
   return (
     <div className={`flex flex-wrap justify-center ${handles.container}`}>
-      {loading ? (
+      {isLoading ? (
         <Spinner />
-      ) : orders.length === 0 ? (
+      ) : orders?.length === 0 ? (
         <Card>
           <FormattedMessage id="store/last-orders.noOrder" />
         </Card>
       ) : (
-        orders.map(order => {
+        orders?.map?.(order => {
           const firstItemImageUrl = order.items[0]?.imageUrl
           const firstItemName = order.items[0]?.name ?? ''
 

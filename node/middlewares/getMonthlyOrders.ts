@@ -2,46 +2,49 @@ import {
   getDistintClientAmount,
   getFirstDayInMonth,
   getLastDayInMonth,
+  getTotalValue,
 } from '../helpers'
 
-const getMonthlyOrders = async (context: Context): Promise<void> => {
+const getMonthlyOrders = async (
+  context: Context,
+  next: Next
+): Promise<void> => {
   const {
-    clients: { omsClient },
-    state: { permissionQuery },
+    clients: { omsClient, b2bGoalsClient },
+    state: {
+      userAndPermissions: { organizationId },
+      permissionQuery,
+    },
   } = context
 
   const intervalQuery = `f_creationDate=creationDate:[${getFirstDayInMonth()} TO ${getLastDayInMonth()}]`
-  const monthlyOrders = await omsClient.search(
-    `orderBy=creationDate,desc&${intervalQuery}&page=1&per_page=99999${permissionQuery}`
-  )
 
-  const allOrders = await omsClient.search(
-    `page=1&per_page=99999${permissionQuery}`
-  )
+  const [monthlyOrders, allOrders, goal] = await Promise.all([
+    omsClient.search(
+      `orderBy=creationDate,desc&${intervalQuery}&page=1&per_page=99999${permissionQuery}`
+    ),
+    omsClient.search(`page=1&per_page=99999${permissionQuery}`),
+    b2bGoalsClient.getGoal(String(organizationId)),
+  ])
 
-  const totalValue = monthlyOrders.list
-    .filter(order => order?.paymentApprovedDate)
-    .map(order => order.totalValue)
-    .reduce((a: number, b: number) => a + b, 0)
-
+  const totalValue = getTotalValue(monthlyOrders)
   const allOrdersDistinctClientAmount = getDistintClientAmount(allOrders)
-
   const monthlyOrdersDistinctClientAmount =
     getDistintClientAmount(monthlyOrders)
 
-  context.set('Access-Control-Allow-Origin', '*')
-  context.set('Access-Control-Allow-Headers', '*')
-  context.set('Access-Control-Allow-Credentials', 'true')
-  context.set('Access-Control-Allow-Methods', '*')
-  context.set('Content-Type', 'application/json')
-  context.set('Cache-Control', 'max-age=300')
+  const lastOrderId = allOrders.list[0]?.orderId ?? null
+  const goalValue = goal.goal ?? 0
 
-  context.status = 200
-  context.body = {
+  context.set('Cache-Control', 'max-age=300')
+  context.state.body = {
     totalValue,
-    monthlyOrdersDistinctClientAmount,
     allOrdersDistinctClientAmount,
+    monthlyOrdersDistinctClientAmount,
+    lastOrderId,
+    goal: goalValue,
   }
+
+  await next()
 }
 
 export default getMonthlyOrders

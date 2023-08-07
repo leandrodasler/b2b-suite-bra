@@ -1,31 +1,24 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { FormattedMessage } from 'react-intl'
+import React, { useMemo } from 'react'
+import { FormattedMessage, useIntl } from 'react-intl'
 import { useCssHandles } from 'vtex.css-handles'
 import { FormattedCurrency } from 'vtex.format-currency'
-import { Progress } from 'vtex.styleguide'
+import { Link, Progress } from 'vtex.styleguide'
 
-import {
-  B2BContext,
-  B2BContextProps,
-  RepresentativeAreaContextProps,
-} from '../../context/B2BContext'
-import {
-  RepresentativeAreaProps,
-  getGoal,
-  getMonthlyOrders,
-  getPercentReachedValue,
-  getPercentReachedValueFormatted,
-} from '../../utils'
+import { B2BContext } from '../../context/B2BContext'
+import { getRemainingDaysInMonth } from '../../utils/dates'
+import { getPercent, getPercentFormatted } from '../../utils/numberFormatter'
+import { useMonthlyOrders } from '../../utils/orders'
 import B2BRepresentativeAreaSkeleton from './B2BRepresentativeAreaSkeleton'
 import './styles.css'
 
-const CSS_HANDLES = ['title', 'data', 'description', 'value']
-
-interface MonthlyOrders {
-  totalValue: number
-  monthlyOrdersDistinctClientAmount: number
-  allOrdersDistinctClientAmount: number
+interface RepresentativeAreaProps {
+  individualGoal: number
+  reachedValue: number
+  customersPortfolio: number
+  customersOrdersMonth: number
 }
+
+const CSS_HANDLES = ['title', 'data', 'description', 'value']
 
 function B2BRepresentativeArea(
   props: RepresentativeAreaProps = {
@@ -35,74 +28,36 @@ function B2BRepresentativeArea(
     customersOrdersMonth: 0,
   }
 ) {
-  const [loadingMonthlyOrders, setLoadingMonthlyOrders] = useState(true)
-  const [loadingGoal, setLoadingGoal] = useState(true)
-  const { data, setData } = React.useContext(B2BContext)
+  const intl = useIntl()
   const handles = useCssHandles(CSS_HANDLES)
-  const [goal, setGoal] = useState(0)
-  const [monthlyOrders, setMonthlyOrders] = useState<MonthlyOrders>()
+  const { user } = React.useContext(B2BContext)
+  const organization = user?.organization
+  const { monthlyOrders, isLoading: loadingMonthlyOrders } = useMonthlyOrders()
 
-  const representativeArea = data?.representativeArea
-  const user = data?.user
-  const organization = data?.user?.organization
+  const individualGoal = monthlyOrders?.goal
+    ? monthlyOrders?.goal
+    : organization === '47da0c2b-a4a5-11ec-835d-02bbf463c079'
+    ? 40000
+    : organization === 'df6965b9-a499-11ec-835d-0aa8762320bd'
+    ? 35000
+    : organization === '4b3635cf-b937-11ed-83ab-02032078fba7'
+    ? 30000
+    : organization === '0d3ea49a-c1e6-11ed-83ab-12e19e79322b'
+    ? 25000
+    : props.individualGoal
 
-  useEffect(() => {
-    if (organization) {
-      getGoal(organization).then(goal => {
-        setGoal(goal)
-        setLoadingGoal(false)
-      })
+  const totalValue = (monthlyOrders?.totalValue ?? 0) / 100
 
-      getMonthlyOrders().then(orders => {
-        setMonthlyOrders(orders)
-        setLoadingMonthlyOrders(false)
-      })
-    }
-  }, [organization])
-
-  useEffect(() => {
-    if (monthlyOrders) {
-      setData?.((prevData: B2BContextProps) => ({
-        ...prevData,
-        representativeArea: {
-          ...prevData.representativeArea,
-          individualGoal: {
-            ...prevData.representativeArea.individualGoal,
-            value: goal
-              ? goal
-              : organization === '47da0c2b-a4a5-11ec-835d-02bbf463c079'
-              ? 40000
-              : organization === 'df6965b9-a499-11ec-835d-0aa8762320bd'
-              ? 35000
-              : organization === '4b3635cf-b937-11ed-83ab-02032078fba7'
-              ? 30000
-              : organization === '0d3ea49a-c1e6-11ed-83ab-12e19e79322b'
-              ? 25000
-              : props.individualGoal,
-          },
-          reachedValue: {
-            ...prevData.representativeArea.reachedValue,
-            value: (monthlyOrders.totalValue ?? 0) / 100,
-          },
-          customersPortfolio: {
-            ...prevData.representativeArea.customersPortfolio,
-            value: monthlyOrders.allOrdersDistinctClientAmount,
-          },
-          customersOrdersMonth: {
-            ...prevData.representativeArea.customersOrdersMonth,
-            value: monthlyOrders.monthlyOrdersDistinctClientAmount,
-          },
-        },
-      }))
-    }
-  }, [props, setData, monthlyOrders, organization, goal])
-
-  const percent = useCallback(getPercentReachedValue, [representativeArea])
-  const percentFormatted = useCallback(getPercentReachedValueFormatted, [
-    representativeArea,
+  const percent = useMemo(() => getPercent(totalValue, individualGoal ?? 1), [
+    individualGoal,
+    totalValue,
   ])
 
-  if (loadingMonthlyOrders || loadingGoal) {
+  const percentFormatted = useMemo(() => getPercentFormatted(percent), [
+    percent,
+  ])
+
+  if (loadingMonthlyOrders) {
     return <B2BRepresentativeAreaSkeleton />
   }
 
@@ -115,57 +70,94 @@ function B2BRepresentativeArea(
         </span>
       </h4>
       <div className="flex flex-wrap items-baseline">
-        {!!representativeArea &&
-          Object.keys(representativeArea).map((key, index) => (
-            <div
-              className={`
-              flex flex-wrap self-center mb3 w-50 w-33-xl
-              ${handles.data}
-              ${[0, 3].includes(index) ? 'w-34-xl' : ''}
-              ${[1, 4].includes(index) ? 'justify-center-xl' : ''}
-              ${[2, 5].includes(index) ? 'justify-end-xl' : ''}
-              ${[2, 5].includes(index) ? 'justify-end-xl' : ''}
-            `}
-              key={key}
-            >
-              <div className={`w-100 w-auto-xl mr2 ${handles.description}`}>
-                {
-                  representativeArea[
-                    key as keyof RepresentativeAreaContextProps
-                  ].description
-                }
-                :{' '}
-              </div>
-              <div className={`w-100 w-auto-xl b ${handles.value}`}>
-                {['individualGoal', 'reachedValue'].includes(key) && (
-                  <FormattedCurrency
-                    value={
-                      +representativeArea[
-                        key as keyof RepresentativeAreaContextProps
-                      ].value ?? '---'
-                    }
-                  />
-                )}
-
-                {key === 'reachedValue' && (
-                  <>
-                    {representativeArea.individualGoal.value !== 0 &&
-                      ` (${percentFormatted(representativeArea)})`}
-                    <Progress
-                      percent={percent(representativeArea)}
-                      type="line"
-                    />
-                  </>
-                )}
-
-                {!['individualGoal', 'reachedValue'].includes(key) &&
-                  (representativeArea[
-                    key as keyof RepresentativeAreaContextProps
-                  ].value ??
-                    '---')}
-              </div>
-            </div>
-          ))}
+        <div
+          className={`flex flex-wrap self-center mb3 w-50 w-34-xl ${handles.data}`}
+        >
+          <div className={`w-100 w-auto-xl mr2 ${handles.description}`}>
+            {intl.formatMessage({
+              id: 'store/representative-area.individualGoal',
+            })}
+            :
+          </div>
+          <div className={`w-100 w-auto-xl b ${handles.value}`}>
+            <FormattedCurrency value={individualGoal || '---'} />
+          </div>
+        </div>
+        <div
+          className={`flex flex-wrap self-center mb3 w-50 w-33-xl justify-center-xl ${handles.data}`}
+        >
+          <div className={`w-100 w-auto-xl mr2 ${handles.description}`}>
+            {intl.formatMessage({
+              id: 'store/representative-area.customersPortfolio',
+            })}
+            :
+          </div>
+          <div className={`w-100 w-auto-xl b ${handles.value}`}>
+            {monthlyOrders?.allOrdersDistinctClientAmount || '---'}
+          </div>
+        </div>
+        <div
+          className={`flex flex-wrap self-center mb3 w-50 w-33-xl justify-end-xl ${handles.data}`}
+        >
+          <div className={`w-100 w-auto-xl mr2 ${handles.description}`}>
+            {intl.formatMessage({
+              id: 'store/representative-area.remainingDaysInMonth',
+            })}
+            :
+          </div>
+          <div className={`w-100 w-auto-xl b ${handles.value}`}>
+            {getRemainingDaysInMonth()}
+          </div>
+        </div>
+        <div
+          className={`flex flex-wrap self-center mb3 w-50 w-34-xl ${handles.data}`}
+        >
+          <div className={`w-100 w-auto-xl mr2 ${handles.description}`}>
+            {intl.formatMessage({
+              id: 'store/representative-area.reachedValue',
+            })}
+            :
+          </div>
+          <div className={`w-100 w-auto-xl b ${handles.value}`}>
+            <FormattedCurrency value={totalValue || '---'} />
+            {individualGoal !== 0 && ` (${percentFormatted})`}
+            <Progress percent={percent} type="line" />
+          </div>
+        </div>
+        <div
+          className={`flex flex-wrap self-center mb3 w-50 w-33-xl justify-center-xl ${handles.data}`}
+        >
+          <div className={`w-100 w-auto-xl mr2 ${handles.description}`}>
+            {intl.formatMessage({
+              id: 'store/representative-area.customersOrdersMonth',
+            })}
+            :
+          </div>
+          <div className={`w-100 w-auto-xl b ${handles.value}`}>
+            {monthlyOrders?.monthlyOrdersDistinctClientAmount || '---'}
+          </div>
+        </div>
+        <div
+          className={`flex flex-wrap self-center mb3 w-50 w-33-xl justify-end-xl ${handles.data}`}
+        >
+          <div className={`w-100 w-auto-xl mr2 ${handles.description}`}>
+            {intl.formatMessage({
+              id: 'store/representative-area.lastOrder',
+            })}
+            :
+          </div>
+          <div className={`w-100 w-auto-xl b ${handles.value}`}>
+            {monthlyOrders?.lastOrderId ? (
+              <Link
+                href={`/account#/orders-history/${monthlyOrders?.lastOrderId}`}
+              >
+                {monthlyOrders?.lastOrderId}
+              </Link>
+            ) : (
+              'N/A'
+            )}
+          </div>
+        </div>
       </div>
     </>
   )

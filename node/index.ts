@@ -16,6 +16,7 @@ import getMonthlyOrders from './middlewares/getMonthlyOrders'
 import getOrder from './middlewares/getOrder'
 import getOrders from './middlewares/getOrders'
 import getPermissions from './middlewares/getPermissions'
+import setResponse from './middlewares/setResponse'
 
 const TIMEOUT_MS = 4 * 1000
 const CONCURRENCY = 10
@@ -59,11 +60,18 @@ declare global {
     list: OrdersItem[]
   }
 
-  type Order = OrderDetailResponse
+  type Order = OrderDetailResponse & OrdersItem
+
+  interface Goal {
+    success: boolean
+    organizationId: string
+    goal: number
+  }
 
   interface State extends RecorderState {
     userAndPermissions: UserAndPermissions
     permissionQuery: string
+    body: unknown
   }
 
   type Context = ServiceContext<Clients, State>
@@ -75,13 +83,13 @@ export default new Service({
   clients,
   routes: {
     monthlyOrders: method({
-      GET: [getPermissions, getMonthlyOrders],
+      GET: [getPermissions, getMonthlyOrders, setResponse],
     }),
     orders: method({
-      GET: [getPermissions, getOrders],
+      GET: [getPermissions, getOrders, setResponse],
     }),
     order: method({
-      GET: [getPermissions, getOrder],
+      GET: [getPermissions, getOrder, setResponse],
     }),
   },
 })

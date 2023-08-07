@@ -89,9 +89,6 @@
   "b2b-representative-area": {
     "component": "B2BRepresentativeArea"
   },
-  "b2b-switch-organizations": {
-    "component": "B2BSwitchOrganizations"
-  },
   "skeleton": {
     "component": "Skeleton"
   },

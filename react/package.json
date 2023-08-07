@@ -4,6 +4,7 @@
     "test": "vtex-test-tools test"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.32.6",
     "apollo-client": "^2.6.3",
     "classnames": "^2.2.6",
     "debounce": "^1.2.0",
