@@ -20,14 +20,14 @@ interface RepresentativeAreaProps {
 
 const CSS_HANDLES = ['title', 'data', 'description', 'value']
 
-function B2BRepresentativeArea(
-  props: RepresentativeAreaProps = {
+const B2BRepresentativeArea: StorefrontFunctionComponent<RepresentativeAreaProps> = (
+  props = {
     individualGoal: 0,
     reachedValue: 0,
     customersPortfolio: 0,
     customersOrdersMonth: 0,
   }
-) {
+) => {
   const intl = useIntl()
   const handles = useCssHandles(CSS_HANDLES)
   const { user } = React.useContext(B2BContext)

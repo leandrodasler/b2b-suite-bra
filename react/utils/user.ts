@@ -27,6 +27,10 @@ export const getUser = async (): Promise<User> => {
 
   const session = await sessionResponse.json()
 
+  if (!session?.namespaces['storefront-permissions']) {
+    throw new Error('Invalid session')
+  }
+
   const authUserToken =
     session?.namespaces['cookie']?.[`VtexIdclientAutCookie_${account}`]?.value
   const b2bUserId = session?.namespaces['storefront-permissions']?.userId?.value
@@ -48,6 +52,7 @@ export const useCurrentUser = () => {
   const { data: user, isLoading, error } = useQuery<User, Error>({
     queryKey: ['get-user'],
     queryFn: getUser,
+    retry: 2,
   })
 
   return { user, isLoading, error }
