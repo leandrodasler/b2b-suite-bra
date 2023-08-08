@@ -66,7 +66,7 @@ function B2BRepresentativeArea(
       <h4 className={`t-heading-4 mt0 pb3 mb3 b--black-10 ${handles.title}`}>
         <FormattedMessage id="store/representative-area.title" />:{' '}
         <span className="b">
-          {`${user?.firstName?.value} ${user?.lastName?.value}`}
+          {user?.firstName?.value} {user?.lastName?.value}
         </span>
       </h4>
       <div className="flex flex-wrap items-baseline">
@@ -80,7 +80,11 @@ function B2BRepresentativeArea(
             :
           </div>
           <div className={`w-100 w-auto-xl b ${handles.value}`}>
-            <FormattedCurrency value={individualGoal || '---'} />
+            {individualGoal ? (
+              <FormattedCurrency value={individualGoal} />
+            ) : (
+              '---'
+            )}
           </div>
         </div>
         <div
@@ -93,7 +97,7 @@ function B2BRepresentativeArea(
             :
           </div>
           <div className={`w-100 w-auto-xl b ${handles.value}`}>
-            {monthlyOrders?.allOrdersDistinctClientAmount || '---'}
+            {monthlyOrders?.allOrdersDistinctClientAmount ?? 0}
           </div>
         </div>
         <div
@@ -119,7 +123,7 @@ function B2BRepresentativeArea(
             :
           </div>
           <div className={`w-100 w-auto-xl b ${handles.value}`}>
-            <FormattedCurrency value={totalValue || '---'} />
+            <FormattedCurrency value={totalValue} />
             {individualGoal !== 0 && ` (${percentFormatted})`}
             <Progress percent={percent} type="line" />
           </div>
@@ -134,7 +138,7 @@ function B2BRepresentativeArea(
             :
           </div>
           <div className={`w-100 w-auto-xl b ${handles.value}`}>
-            {monthlyOrders?.monthlyOrdersDistinctClientAmount || '---'}
+            {monthlyOrders?.monthlyOrdersDistinctClientAmount ?? 0}
           </div>
         </div>
         <div
