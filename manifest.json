@@ -1,7 +1,7 @@
 {
   "vendor": "ssesandbox04",
   "name": "b2b-suite-bra",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "title": "B2B Suite Brasil",
   "description": "Provides blocks for B2B facilities in the storefront",
   "scripts": {
