@@ -1,6 +1,7 @@
 import {
   getDistintClientAmount,
   getFirstDayInMonth,
+  getGoal,
   getLastDayInMonth,
   getTotalValue,
 } from '../helpers'
@@ -10,11 +11,8 @@ const getMonthlyOrders = async (
   next: Next
 ): Promise<void> => {
   const {
-    clients: { omsClient, b2bGoalsClient },
-    state: {
-      userAndPermissions: { organizationId },
-      permissionQuery,
-    },
+    clients: { omsClient },
+    state: { permissionQuery },
   } = context
 
   const intervalQuery = `f_creationDate=creationDate:[${getFirstDayInMonth()} TO ${getLastDayInMonth()}]`
@@ -24,7 +22,7 @@ const getMonthlyOrders = async (
       `orderBy=creationDate,desc&${intervalQuery}&page=1&per_page=99999${permissionQuery}`
     ),
     omsClient.search(`page=1&per_page=99999${permissionQuery}`),
-    b2bGoalsClient.getGoal(String(organizationId)),
+    getGoal(context),
   ])
 
   const totalValue = getTotalValue(monthlyOrders)
@@ -33,7 +31,6 @@ const getMonthlyOrders = async (
     getDistintClientAmount(monthlyOrders)
 
   const lastOrderId = allOrders.list[0]?.orderId ?? null
-  const goalValue = goal.goal ?? 0
 
   context.set('Cache-Control', 'max-age=300')
   context.state.body = {
@@ -41,7 +38,7 @@ const getMonthlyOrders = async (
     allOrdersDistinctClientAmount,
     monthlyOrdersDistinctClientAmount,
     lastOrderId,
-    goal: goalValue,
+    goal,
   }
 
   await next()

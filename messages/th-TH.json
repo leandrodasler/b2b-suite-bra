@@ -30,7 +30,7 @@
   "store/representative-area.lastOrderLoading": "loading...",
   "store/representative-area.lastOrder": "Last order",
 
-  "store/last-orders.noOrder": "No order to display",
+  "store/last-orders.noOrder": "No recent orders",
   "store/last-orders.orderNumber": "Order No.",
   "store/last-orders.orderMadeBy": "Made by",
   "store/last-orders.date": "Date",

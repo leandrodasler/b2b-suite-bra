@@ -2,17 +2,18 @@
   "dependencies": {
     "@vtex/clients": "^2.21.0",
     "co-body": "^6.0.0",
+    "jsonwebtoken": "^9.0.1",
     "ramda": "^0.25.0"
   },
   "devDependencies": {
     "@types/co-body": "^0.0.3",
     "@types/jest": "^24.0.18",
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^12.0.0",
     "@types/ramda": "types/npm-ramda#dist",
     "@vtex/api": "6.45.19",
     "@vtex/test-tools": "^1.0.0",
     "@vtex/tsconfig": "^0.5.6",
-    "ssesandbox04.b2b-suite-bra": "https://tiago--bravtexfashionb2b.myvtex.com/_v/private/typings/linked/v1/ssesandbox04.b2b-suite-bra@0.0.17+build1683172111/public/@types/ssesandbox04.b2b-suite-bra",
     "typescript": "3.9.7",
     "vtex.apps-graphql": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.apps-graphql@2.11.4/public/@types/vtex.apps-graphql",
     "vtex.b2b-organizations-graphql": "http://vtex.vtexassets.com/_v/public/typings/v1/vtex.b2b-organizations-graphql@0.32.0/public/@types/vtex.b2b-organizations-graphql",

@@ -115,11 +115,44 @@
     {
       "name": "outbound-access",
       "attrs": {
-        "host": "b2bgoals--{{account}}.myvtex.com",
-        "path": "/_v/b2b-sales-representative-quotes/*"
+        "host": "sheets.googleapis.com",
+        "path": "/v4/spreadsheets/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "googleapis.com",
+        "path": "/oauth2/v4/*"
       }
     }
   ],
+  "settingsSchema": {
+    "title": "Google Sheets API Settings",
+    "type": "object",
+    "properties": {
+      "service_account_credentials_json": {
+        "title": "Google API Service Account Credentials JSON",
+        "type": "string",
+        "description": "Paste entire Google API Service Account Credentials JSON"
+      },
+      "google_sheet_id": {
+        "title": "Sales Representative Goals Google Sheet ID",
+        "type": "string",
+        "description": "Find the ID in the Google Sheet URL: https://docs.google.com/spreadsheets/d/{{ Google Sheet ID }}/edit"
+      },
+      "tab_title": {
+        "title": "Tab Title (optional)",
+        "type": "string",
+        "description": "The worksheet tab where data will be fetched."
+      },
+      "default_goal": {
+        "title": "Default value when a goal is not found in sheet (optional)",
+        "description": "Insert the desired numerical value, using a dot (.) or comma (,) as decimal separator. For values greater than 1000, you can use the thousands separator (dot or comma). Examples of valid formats for one thousand and fifty cents of your currency: 1000,50, 1000,5, 1000.50, 1000.5, 1,000.50, 1,000.5.",
+        "type": "string"
+      }
+    }
+  },
   "billingOptions": {
     "type": "free",
     "availableCountries": [

@@ -30,7 +30,7 @@
   "store/representative-area.lastOrderLoading": "carregando...",
   "store/representative-area.lastOrder": "Último pedido",
 
-  "store/last-orders.noOrder": "Nenhum pedido para exibir",
+  "store/last-orders.noOrder": "Nenhum pedido recente",
   "store/last-orders.orderNumber": "Pedido nº",
   "store/last-orders.orderMadeBy": "Feito por",
   "store/last-orders.date": "Data",
