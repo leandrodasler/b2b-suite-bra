@@ -1,4 +1,4 @@
-import type { InstanceOptions, IOContext } from '@vtex/api'
+import type { InstanceOptions, IOContext, Maybe } from '@vtex/api'
 import { ExternalClient } from '@vtex/api'
 
 interface GoogleSheetsResponse {
@@ -15,7 +15,7 @@ export default class GoogleSheets extends ExternalClient {
   public async getValues(
     token: string,
     googleSheetId: string,
-    tabTitle?: string
+    tabTitle: Maybe<string>
   ) {
     const range = tabTitle ?? 'A:ZZZ'
 
