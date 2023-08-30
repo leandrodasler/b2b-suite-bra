@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 REPO=$(git remote get-url --push origin)
 echo $'\n=============== Commiting changes to repository '$REPO
 echo "Enter commit description: "
