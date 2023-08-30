@@ -11,45 +11,17 @@ import { useMonthlyOrders } from '../../utils/orders'
 import B2BRepresentativeAreaSkeleton from './B2BRepresentativeAreaSkeleton'
 import './styles.css'
 
-interface RepresentativeAreaProps {
-  individualGoal: number
-  reachedValue: number
-  customersPortfolio: number
-  customersOrdersMonth: number
-}
-
-const CSS_HANDLES = ['title', 'data', 'description', 'value']
-
-const B2BRepresentativeArea: StorefrontFunctionComponent<RepresentativeAreaProps> = (
-  props = {
-    individualGoal: 0,
-    reachedValue: 0,
-    customersPortfolio: 0,
-    customersOrdersMonth: 0,
-  }
-) => {
+const B2BRepresentativeArea: StorefrontFunctionComponent = () => {
   const intl = useIntl()
-  const handles = useCssHandles(CSS_HANDLES)
+  const handles = useCssHandles(['title', 'data', 'description', 'value'])
   const { user } = React.useContext(B2BContext)
-  const organization = user?.organization
   const { monthlyOrders, isLoading: loadingMonthlyOrders } = useMonthlyOrders()
 
-  const individualGoal = monthlyOrders?.goal
-    ? monthlyOrders?.goal
-    : organization === '47da0c2b-a4a5-11ec-835d-02bbf463c079'
-    ? 40000
-    : organization === 'df6965b9-a499-11ec-835d-0aa8762320bd'
-    ? 35000
-    : organization === '4b3635cf-b937-11ed-83ab-02032078fba7'
-    ? 30000
-    : organization === '0d3ea49a-c1e6-11ed-83ab-12e19e79322b'
-    ? 25000
-    : props.individualGoal
-
+  const goal = monthlyOrders?.goal
   const totalValue = (monthlyOrders?.totalValue ?? 0) / 100
 
-  const percent = useMemo(() => getPercent(totalValue, individualGoal ?? 1), [
-    individualGoal,
+  const percent = useMemo(() => getPercent(totalValue, goal ?? 1), [
+    goal,
     totalValue,
   ])
 
@@ -80,11 +52,7 @@ const B2BRepresentativeArea: StorefrontFunctionComponent<RepresentativeAreaProps
             :
           </div>
           <div className={`w-100 w-auto-xl b ${handles.value}`}>
-            {individualGoal ? (
-              <FormattedCurrency value={individualGoal} />
-            ) : (
-              '---'
-            )}
+            {goal ? <FormattedCurrency value={goal} /> : '---'}
           </div>
         </div>
         <div
@@ -124,7 +92,7 @@ const B2BRepresentativeArea: StorefrontFunctionComponent<RepresentativeAreaProps
           </div>
           <div className={`w-100 w-auto-xl b ${handles.value}`}>
             <FormattedCurrency value={totalValue} />
-            {individualGoal !== 0 && ` (${percentFormatted})`}
+            {!!goal && ` (${percentFormatted})`}
             <Progress percent={percent} type="line" />
           </div>
         </div>
@@ -165,33 +133,6 @@ const B2BRepresentativeArea: StorefrontFunctionComponent<RepresentativeAreaProps
       </div>
     </>
   )
-}
-
-B2BRepresentativeArea.schema = {
-  title: 'B2B Representative Area',
-  type: 'object',
-  properties: {
-    individualGoal: {
-      type: 'number',
-      title: 'Individual goal',
-      default: 0,
-    },
-    reachedValue: {
-      type: 'number',
-      title: 'Reached value',
-      default: 0,
-    },
-    customersPortfolio: {
-      type: 'number',
-      title: 'Number of customers in portfolio',
-      default: 0,
-    },
-    customersOrdersMonth: {
-      type: 'number',
-      title: 'Number of customers that ordered this month',
-      default: 0,
-    },
-  },
 }
 
 export default B2BRepresentativeArea

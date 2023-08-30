@@ -22,3 +22,6 @@ vtex install
 vtex switch vtexfashionb2b
 vtex use master
 vtex install
+vtex switch kevinyeebiz
+vtex use master
+vtex install

@@ -1,5 +1,4 @@
 import type { Maybe } from '@vtex/api'
-import { AuthenticationError, UserInputError } from '@vtex/api'
 
 import { convertStringCurrencyToNumber } from './numbers'
 
@@ -40,6 +39,13 @@ export const getGoal = async (context: Context) => {
     process.env.VTEX_APP_ID ?? ''
   )
 
+  const googleSheetId = appSettings?.google_sheet_id
+  const tabTitle = appSettings?.tab_title
+
+  const defaultGoal = convertStringCurrencyToNumber(
+    appSettings?.default_goal ?? '0'
+  )
+
   const apiCredentials = JSON.parse(
     appSettings?.service_account_credentials_json ?? '{}'
   )
@@ -49,22 +55,9 @@ export const getGoal = async (context: Context) => {
     privateKey: apiCredentials.private_key,
   }
 
-  if (!auth.clientEmail || !auth.privateKey) {
-    throw new AuthenticationError(
-      'Missing credentials from Google service account'
-    )
+  if (!googleSheetId || !auth.clientEmail || !auth.privateKey) {
+    return defaultGoal
   }
-
-  const googleSheetId = appSettings?.google_sheet_id
-
-  if (!googleSheetId) {
-    throw new UserInputError('Missing Google Sheet ID on app settings')
-  }
-
-  const tabTitle = appSettings?.tab_title
-  const defaultGoal = convertStringCurrencyToNumber(
-    appSettings?.default_goal ?? '0'
-  )
 
   const token = await googleApiTokenClient.getToken(auth, GOOGLE_SHEETS_SCOPE)
 
