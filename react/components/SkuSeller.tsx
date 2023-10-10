@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react'
-import { Item, Product, Seller } from '../typings'
+import type { Seller } from 'vtex.product-context/react/ProductTypes'
+
+import { Item, Product } from '../typings'
 import { SkuSellerProvider } from './SkuSellerContext'
 
 interface Props {

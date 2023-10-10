@@ -1,6 +1,15 @@
-import { ApolloError } from 'apollo-client'
-import { ReactNodeArray } from 'react'
-import { InjectedIntl } from 'react-intl'
+import type { ApolloError } from 'apollo-client'
+import type { ReactNodeArray } from 'react'
+import type { InjectedIntl } from 'react-intl'
+import type { Seller } from 'vtex.product-context/react/ProductTypes'
+
+interface Benefit {
+  teaserType?: string
+  items?: Array<{
+    minQuantity?: number
+    discount?: number
+  }>
+}
 
 export interface Product {
   productId: string
@@ -12,6 +21,7 @@ export interface Product {
   brandId: number
   items: Item[]
   categories: string[]
+  benefits?: Benefit[]
 }
 
 export interface Item {
@@ -45,12 +55,6 @@ export interface Image {
   imageText: string
   imageLabel?: string
   imageTag?: string
-}
-
-export interface Seller {
-  sellerId: string | number
-  sellerName: string
-  commertialOffer: CommercialOffer
 }
 
 export interface CommercialOffer {

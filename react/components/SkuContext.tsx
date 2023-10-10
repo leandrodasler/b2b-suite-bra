@@ -1,5 +1,5 @@
-import React, { useReducer } from 'react'
-import { createContext, useContext } from 'react'
+import React, { createContext, useContext, useReducer } from 'react'
+
 import { Item, Product } from '../typings'
 
 const SkuContext = createContext<State | undefined>(undefined)

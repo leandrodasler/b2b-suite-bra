@@ -1,0 +1,8 @@
+query getFixedPrices($skuId: String!) {
+  getFixedPrices(skuId: $skuId)
+    @context(provider: "ssesandbox04.progressive-discount-table") {
+    tradePolicyId
+    value
+    minQuantity
+  }
+}

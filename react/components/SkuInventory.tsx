@@ -1,9 +1,11 @@
-import React from 'react'
-import { useSku } from './SkuContext'
-import { Item, Seller } from '../typings'
-import { useCssHandles } from 'vtex.css-handles'
 import { pathOr } from 'ramda'
+import React from 'react'
 import { FormattedMessage } from 'react-intl'
+import { useCssHandles } from 'vtex.css-handles'
+import type { Seller } from 'vtex.product-context/react/ProductTypes'
+
+import { Item } from '../typings'
+import { useSku } from './SkuContext'
 
 const CSS_HANDLES = ['inventoryContainer', 'inventory'] as const
 

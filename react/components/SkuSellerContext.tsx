@@ -1,6 +1,7 @@
-import React, { ReactNode, useReducer } from 'react'
-import { createContext, useContext } from 'react'
-import { Seller, Item, Product } from '../typings'
+import React, { ReactNode, createContext, useContext, useReducer } from 'react'
+import type { Seller } from 'vtex.product-context/react/ProductTypes'
+
+import { Item, Product } from '../typings'
 
 const SkuSellerContext = createContext<State | undefined>(undefined)
 const SkuSellerDispatchContext = createContext<Dispatch | undefined>(undefined)

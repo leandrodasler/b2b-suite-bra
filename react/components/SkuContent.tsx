@@ -2,10 +2,11 @@ import classNames from 'classnames'
 import React, { ReactNode, SyntheticEvent } from 'react'
 import { useCssHandles } from 'vtex.css-handles'
 import { useProductDispatch } from 'vtex.product-context/ProductDispatchContext'
+import type { Seller } from 'vtex.product-context/react/ProductTypes'
 import useProduct from 'vtex.product-context/useProduct'
 import { ExtensionPoint } from 'vtex.render-runtime'
 
-import { Item, Product, Seller } from '../typings'
+import { Item, Product } from '../typings'
 import { SkuProvider } from './SkuContext'
 
 const CSS_HANDLES = ['skuContentWrapper', 'selectedSkuContentWrapper'] as const

@@ -1,10 +1,12 @@
-import React from 'react'
-import { useSkuSeller } from './SkuSellerContext'
-import { Seller, Item } from '../typings'
-import { useCssHandles } from 'vtex.css-handles'
 import { path } from 'ramda'
-import { FormattedCurrency } from 'vtex.format-currency'
+import React from 'react'
 import { FormattedMessage } from 'react-intl'
+import { useCssHandles } from 'vtex.css-handles'
+import { FormattedCurrency } from 'vtex.format-currency'
+import type { Seller } from 'vtex.product-context/react/ProductTypes'
+
+import { Item } from '../typings'
+import { useSkuSeller } from './SkuSellerContext'
 
 const CSS_HANDLES = ['sellerPriceContainer'] as const
 

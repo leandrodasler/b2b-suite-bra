@@ -35,7 +35,8 @@
     "vtex.overlay-layout": "0.x",
     "vtex.b2b-organizations-graphql": "0.x",
     "vtex.storefront-permissions": "1.x",
-    "vtex.store-image": "0.x"
+    "vtex.store-image": "0.x",
+    "ssesandbox04.progressive-discount-table": "2.x"
   },
   "registries": [
     "smartcheckout"

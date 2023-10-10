@@ -31,6 +31,9 @@
   "sku-price": {
     "component": "SkuPrice"
   },
+  "sku-price-by-quantity": {
+    "component": "SkuPriceByQuantity"
+  },
   "sku-inventory": {
     "component": "SkuInventory"
   },

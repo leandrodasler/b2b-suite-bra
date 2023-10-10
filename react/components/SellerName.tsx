@@ -1,8 +1,9 @@
 import React from 'react'
-import { useSkuSeller } from './SkuSellerContext'
-import { Seller } from '../typings'
-import { useCssHandles } from 'vtex.css-handles'
 import { FormattedMessage } from 'react-intl'
+import { useCssHandles } from 'vtex.css-handles'
+import type { Seller } from 'vtex.product-context/react/ProductTypes'
+
+import { useSkuSeller } from './SkuSellerContext'
 
 const CSS_HANDLES = ['sellerName'] as const
 
