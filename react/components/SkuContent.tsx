@@ -14,10 +14,11 @@ const CSS_HANDLES = ['skuContentWrapper', 'selectedSkuContentWrapper'] as const
 interface Props {
   product: Product
   item: Item
+  isFirstItem: boolean
   children?: ReactNode[]
 }
 
-const SkuContent = ({ item, product, children }: Props) => {
+const SkuContent = ({ item, isFirstItem, product, children }: Props) => {
   const handles = useCssHandles(CSS_HANDLES)
   const { selectedItem }: { selectedItem: Item } = useProduct()
   const dispatch = useProductDispatch()
@@ -43,7 +44,7 @@ const SkuContent = ({ item, product, children }: Props) => {
     }
   )
   return (
-    <SkuProvider sku={item} product={product}>
+    <SkuProvider sku={item} isFirstItem={isFirstItem} product={product}>
       <div
         className={containerClasses}
         onClick={handleClick}

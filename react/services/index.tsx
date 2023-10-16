@@ -70,4 +70,6 @@ export * from './useCurrentTradePolicy'
 
 export * from './useFixedPrices'
 
+export * from './useProductWithBenefits'
+
 export * from './useSkuWithBenefits'

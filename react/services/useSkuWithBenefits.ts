@@ -2,13 +2,16 @@ import { useProduct } from 'vtex.product-context'
 
 import { useSku } from '../components/SkuContext'
 import { Product } from '../typings'
+import { distinctBenefits } from '../utils/benefits'
 import { getDefaultSeller } from '../utils/seller'
 
 export const useSkuWithBenefits = () => {
-  const { sku, selectedQuantity } = useSku()
+  const { sku, isFirstItem, selectedQuantity } = useSku()
   const productContext = useProduct()
   const product = productContext?.product as Product
-  const benefits = product?.benefits?.filter(b => b?.teaserType === 'Catalog')
+  const benefits = distinctBenefits(
+    product?.benefits?.filter(b => b?.teaserType === 'Catalog')
+  )
   const productName = product?.productName
   const itemId = sku?.itemId
   const itemName = sku.name
@@ -21,6 +24,7 @@ export const useSkuWithBenefits = () => {
   return {
     itemId,
     itemName,
+    isFirstItem,
     selectedQuantity,
     productName,
     benefits,

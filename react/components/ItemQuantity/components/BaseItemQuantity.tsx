@@ -1,8 +1,9 @@
-import { pathOr } from 'ramda'
+import pathOr from 'ramda/src/pathOr'
 import React, { useCallback } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { useCssHandles } from 'vtex.css-handles'
 import { Input } from 'vtex.styleguide'
+
 import { Item } from '../../../typings'
 import NumericStepper from '../../NumericStepper/NumericStepper'
 

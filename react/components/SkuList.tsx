@@ -26,12 +26,13 @@ const SkuListComponent = React.memo(({ device }: { device: Device }) => {
   const product: Product | undefined = path(['product'], valuesFromContext)
   const sortedItems = [...items].sort(compareItemsSequence)
 
-  const renderContent = (item: Item) => {
+  const renderContent = (item: Item, index: number) => {
     switch (device) {
       case Device.mobile:
         return (
           <ExtensionPoint
             id="sku-content.mobile"
+            isFirstItem={index === 0}
             item={item}
             product={product}
             key={`sku-content-${item.itemId}`}
@@ -42,6 +43,7 @@ const SkuListComponent = React.memo(({ device }: { device: Device }) => {
         return (
           <ExtensionPoint
             id="sku-content.desktop"
+            isFirstItem={index === 0}
             item={item}
             product={product}
             key={`sku-content-${item.itemId}`}
@@ -50,11 +52,7 @@ const SkuListComponent = React.memo(({ device }: { device: Device }) => {
     }
   }
 
-  return (
-    <div className="mw9 center pa3">
-      {sortedItems.map((item: Item) => renderContent(item))}
-    </div>
-  )
+  return <div className="mw9 center pa3">{sortedItems.map(renderContent)}</div>
 })
 
 SkuListComponent.displayName = 'SkuListComponent'

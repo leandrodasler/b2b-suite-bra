@@ -1,4 +1,5 @@
 import React from 'react'
+import { useCssHandles } from 'vtex.css-handles'
 import { FormattedCurrency } from 'vtex.format-currency'
 
 interface Props {
@@ -7,11 +8,21 @@ interface Props {
     discount?: number
     fixedPrice?: number
   }>
+  isFirstItem: boolean
   basePrice: number
   title?: string
 }
 
-const SkuPriceByQuantityTable = ({ benefits, basePrice }: Props) => {
+const SkuPriceByQuantityTable = ({
+  benefits,
+  basePrice,
+  isFirstItem,
+}: Props) => {
+  const handles = useCssHandles([
+    'priceByQuantityTable',
+    'priceByQuantityHeader',
+    'priceByQuantityValue',
+  ])
   const firstQuantity = benefits[0]?.minQuantity
   const benefitsToRender = [
     ...(firstQuantity > 1 ? [{ minQuantity: 1, fixedPrice: basePrice }] : []),
@@ -26,19 +37,25 @@ const SkuPriceByQuantityTable = ({ benefits, basePrice }: Props) => {
     renderFixedPrice(price * (1 - discount / 100))
 
   return (
-    <table className="w-100">
+    <table className={`w-100 ${handles.priceByQuantityTable}`} cellPadding="4">
       <tbody>
+        {isFirstItem && (
+          <tr className={handles.priceByQuantityHeader}>
+            {benefitsToRender.map((benefit, index) => (
+              <th key={`benefit-quantity-${index}`} className="bg-muted-4">
+                {benefit?.minQuantity}
+                {index === benefitsToRender.length - 1 && '+'}
+              </th>
+            ))}
+          </tr>
+        )}
         <tr>
           {benefitsToRender.map((benefit, index) => (
-            <th key={`benefit-quantity-${index}`}>
-              {benefit?.minQuantity}
-              {benefitsToRender.length === 1 && '+'}
-            </th>
-          ))}
-        </tr>
-        <tr>
-          {benefitsToRender.map((benefit, index) => (
-            <td align="center" key={`benefit-price-${index}`}>
+            <td
+              align="center"
+              key={`benefit-price-${index}`}
+              className={handles.priceByQuantityValue}
+            >
               {benefit?.fixedPrice
                 ? renderFixedPrice(benefit.fixedPrice)
                 : !!benefit?.discount &&

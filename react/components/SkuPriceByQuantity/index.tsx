@@ -10,7 +10,13 @@ import {
 import SkuPriceByQuantityTable from './table'
 
 const SkuPriceByQuantity = () => {
-  const { itemId, price = 0, benefits, teasers } = useSkuWithBenefits()
+  const {
+    itemId,
+    isFirstItem,
+    price = 0,
+    benefits,
+    teasers,
+  } = useSkuWithBenefits()
   const { data: tradePolicyData } = useCurrentTradePolicy()
   const { data: fixedPrices } = useFixedPrices(
     itemId,
@@ -21,6 +27,7 @@ const SkuPriceByQuantity = () => {
   if (fixedPrices?.length) {
     return (
       <SkuPriceByQuantityTable
+        isFirstItem={isFirstItem}
         basePrice={price}
         benefits={fixedPrices.map((f: Maybe<FixedPrice>) => ({
           minQuantity: f?.minQuantity ?? 1,
@@ -34,8 +41,10 @@ const SkuPriceByQuantity = () => {
     if (teasers?.length && teasers?.[0]?.effects?.parameters?.length) {
       return (
         <SkuPriceByQuantityTable
+          isFirstItem={isFirstItem}
           basePrice={price}
-          benefits={teasers.map(t => ({
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          benefits={teasers.map((t: any) => ({
             minQuantity: t.conditions?.minimumQuantity,
             discount:
               t.effects?.parameters[0].name === 'PercentualDiscount'
@@ -48,6 +57,7 @@ const SkuPriceByQuantity = () => {
 
     return (
       <SkuPriceByQuantityTable
+        isFirstItem={isFirstItem}
         basePrice={price}
         benefits={[{ minQuantity: 1, fixedPrice: price }]}
       />
@@ -56,6 +66,7 @@ const SkuPriceByQuantity = () => {
 
   return (
     <SkuPriceByQuantityTable
+      isFirstItem={isFirstItem}
       basePrice={price}
       benefits={benefits.map(b => ({
         minQuantity: b?.items?.[0]?.minQuantity ?? 1,

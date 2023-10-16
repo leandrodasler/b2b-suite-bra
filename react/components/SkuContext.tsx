@@ -8,6 +8,7 @@ const SkuDispatchContext = createContext<Dispatch | undefined>(undefined)
 interface State {
   product: Product
   sku: Item
+  isFirstItem: boolean
   isHovering: boolean
   isLoading: boolean
   selectedQuantity: number
@@ -87,14 +88,16 @@ export function reducer(state: State, action: Action) {
 
 interface Props {
   sku: Item
+  isFirstItem: boolean
   product: Product
   children: any
 }
 
-export const SkuProvider = ({ sku, product, children }: Props) => {
+export const SkuProvider = ({ sku, isFirstItem, product, children }: Props) => {
   const initialState = {
     product,
     sku,
+    isFirstItem,
     isHovering: false,
     isLoading: false,
     selectedQuantity: 0,
