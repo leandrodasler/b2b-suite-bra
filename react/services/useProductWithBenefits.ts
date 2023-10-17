@@ -24,7 +24,7 @@ type ProductContextWithBenefits =
 export const useProductWithBenefits = () => {
   const productContextValue = useProduct() as ProductContextWithBenefits
   const benefits = productContextValue?.product?.benefits?.filter(
-    (b) => b?.teaserType === 'Catalog'
+    (b: Benefit) => b?.teaserType === 'Catalog'
   )
 
   const productName = productContextValue?.product?.productName
