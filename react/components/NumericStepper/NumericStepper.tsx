@@ -380,7 +380,8 @@ class NumericStepper extends Component<NumericStepperProps> {
               style={{
                 borderTopLeftRadius: 0,
                 borderBottomLeftRadius: 0,
-                width: lean ? '2em' : '3em',
+                // width: lean ? '2em' : '3em',
+                width: '2em',
                 transition: 'opacity 150ms',
               }}
               disabled={readOnly || isMax}
@@ -403,7 +404,8 @@ class NumericStepper extends Component<NumericStepperProps> {
               style={{
                 borderTopRightRadius: 0,
                 borderBottomRightRadius: 0,
-                width: lean ? '2em' : '3em',
+                // width: lean ? '2em' : '3em',
+                width: '2em',
                 transition: 'opacity 150ms',
               }}
               disabled={readOnly || isMin}

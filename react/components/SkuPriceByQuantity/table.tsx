@@ -1,5 +1,6 @@
 import React from 'react'
 import { useCssHandles } from 'vtex.css-handles'
+import { useDevice } from 'vtex.device-detector'
 import { FormattedCurrency } from 'vtex.format-currency'
 
 interface Props {
@@ -18,6 +19,7 @@ const SkuPriceByQuantityTable = ({
   basePrice,
   isFirstItem,
 }: Props) => {
+  const { isMobile } = useDevice()
   const handles = useCssHandles([
     'priceByQuantityTable',
     'priceByQuantityHeader',
@@ -39,7 +41,7 @@ const SkuPriceByQuantityTable = ({
   return (
     <table className={`w-100 ${handles.priceByQuantityTable}`} cellPadding="4">
       <tbody>
-        {isFirstItem && (
+        {(isFirstItem || isMobile) && (
           <tr className={handles.priceByQuantityHeader}>
             {benefitsToRender.map((benefit, index) => (
               <th key={`benefit-quantity-${index}`} className="bg-muted-4">
