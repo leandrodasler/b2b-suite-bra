@@ -2,18 +2,10 @@
   "extends": "@vtex/tsconfig",
   "compilerOptions": {
     "noEmitOnError": false,
-    "lib": [
-      "es2017",
-      "dom",
-      "es2018.promise"
-    ],
+    "lib": ["dom"],
     "module": "esnext",
     "moduleResolution": "node",
     "target": "es2017"
   },
-  "include": [
-    "./**/*.tsx",
-    "./**/*.ts",
-    "./**/*.d.ts"
-  ]
+  "include": ["./typings/*.d.ts", "./**/*.tsx", "./**/*.ts"]
 }

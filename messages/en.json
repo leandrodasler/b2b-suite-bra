@@ -13,10 +13,10 @@
   "store/add-to-cart.select-sku-variations": "Please select an option of each variation",
   "store/add-all-to-cart-button.label": "Add all to cart",
   "store/add-all-to-cart-button.successMessage": "Items added to cart",
-  "store/sku-list.inventory.title": "Inventory",
+  "store/sku-list.inventory.title": "Stock",
   "store/sku-list.seller.name.title": "Seller",
   "store/sku-list.sku.name.title": "Item Name",
-  "store/sku-list.sku.price.title": "Price",
+  "store/sku-list.sku.price.title": "Unit Price",
   "store/sku-list.sku.quantity-selector.title": "Select Quantity",
   "store/sku-list.seller.price.title": "Seller Price",
 

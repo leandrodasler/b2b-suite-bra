@@ -1,10 +1,12 @@
 import { changeImageUrlSize } from './generateUrl'
-import { Image } from '../typings'
+import type { Image } from '../typings'
 
 const thumbnailSize = 160
 
 export default function generateImageConfig(image: Image) {
   return {
+    imageId: image.imageId,
+    imageTag: image.imageTag,
     imageUrl: image.imageUrl,
     thumbnailUrl: changeImageUrlSize(image.imageUrl, thumbnailSize),
     imageText: image.imageText,

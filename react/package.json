@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "lint": "tsc --noEmit && eslint --quiet --fix --ext ts,tsx .",
     "test": "vtex-test-tools test"
   },
   "dependencies": {
@@ -33,8 +32,6 @@
     "@types/react-resize-detector": "^4.2.0",
     "@vtex/test-tools": "^0.3.2",
     "@vtex/tsconfig": "^0.2.0",
-    "eslint": "5.x",
-    "eslint-config-vtex-react": "^5.0.1",
     "prettier": "^1.18.2",
     "prop-types": "^15.7.2",
     "typescript": "3.9.7"

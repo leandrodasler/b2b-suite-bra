@@ -112,5 +112,17 @@
   },
   "benefits-condition": {
     "component": "BenefitsCondition"
+  },
+  "has-variations-condition": {
+    "component": "HasVariationsCondition"
+  },
+  "has-description-condition": {
+    "component": "HasDescriptionCondition"
+  },
+  "has-specifications-condition": {
+    "component": "HasSpecificationsCondition"
+  },
+  "custom-product-description": {
+    "component": "CustomProductDescription"
   }
 }

@@ -13,10 +13,10 @@
   "store/add-to-cart.select-sku-variations": "Por favor selecione uma opção de cada variação",
   "store/add-all-to-cart-button.label": "Adicionar todos ao carrinho",
   "store/add-all-to-cart-button.successMessage": "Itens adicionados ao carrinho",
-  "store/sku-list.inventory.title": "Inventário",
+  "store/sku-list.inventory.title": "Estoque",
   "store/sku-list.seller.name.title": "Vendedor",
   "store/sku-list.sku.name.title": "Nome do item",
-  "store/sku-list.sku.price.title": "Preço",
+  "store/sku-list.sku.price.title": "Preço Unitário",
   "store/sku-list.sku.quantity-selector.title": "Selecione a quantidade",
   "store/sku-list.seller.price.title": "Preço do Vendedor",
 

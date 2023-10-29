@@ -1,14 +1,16 @@
 /* eslint-disable no-console */
-import React, { FC, useEffect, useState } from 'react'
+import type { FC } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useMutation } from 'react-apollo'
 import { defineMessages, useIntl } from 'react-intl'
 import { addToCart as ADD_TO_CART } from 'vtex.checkout-resources/Mutations'
+import { useCssHandles } from 'vtex.css-handles'
 import { OrderForm } from 'vtex.order-manager'
 import { usePixel } from 'vtex.pixel-manager/PixelContext'
 import useProduct from 'vtex.product-context/useProduct'
 import { Button, ToastConsumer, ToastProvider } from 'vtex.styleguide'
 
-import { Item, OrderFormArgs, OrderFormItemInput } from '../../typings'
+import type { Item, OrderFormArgs, OrderFormItemInput } from '../../typings'
 
 const messages = defineMessages({
   label: {
@@ -20,6 +22,7 @@ const messages = defineMessages({
 })
 
 const AddAllToCartButton: FC = () => {
+  const handles = useCssHandles(['addToCartButtonContainer'])
   const productContext = useProduct()
 
   // eslint-disable-next-line prettier/prettier
@@ -49,11 +52,13 @@ const AddAllToCartButton: FC = () => {
   }, [productContext.product.productId])
 
   useEffect(() => {
-    setSelectedItems(selectedItems => {
-      const selectedItemIndex = selectedItems.findIndex(
+    setSelectedItems(currentSelectedItems => {
+      const selectedItemIndex = currentSelectedItems.findIndex(
         (item: Item) => item.itemId === productContext.selectedItem.itemId
       )
-      const newSelectedItems = [...selectedItems]
+
+      const newSelectedItems = [...currentSelectedItems]
+
       newSelectedItems[selectedItemIndex] = {
         ...productContext.selectedItem,
         quantity: productContext.selectedQuantity,
@@ -90,6 +95,7 @@ const AddAllToCartButton: FC = () => {
 
     if (error) {
       showToast({ message: 'Erro ao adicionar os itens ao carrinho' })
+
       return
     }
 
@@ -113,14 +119,18 @@ const AddAllToCartButton: FC = () => {
       <ToastConsumer>
         {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         {({ showToast }: any) => (
-          <Button
-            disabled={haveAllItemsQuantityZero()}
-            onClick={() => handleAddAllToCart(showToast)}
-            variation="primary"
-            isLoading={loading}
+          <div
+            className={`flex justify-end ${handles.addToCartButtonContainer}`}
           >
-            {formatMessage(messages.label)}
-          </Button>
+            <Button
+              disabled={haveAllItemsQuantityZero()}
+              onClick={() => handleAddAllToCart(showToast)}
+              variation="primary"
+              isLoading={loading}
+            >
+              {formatMessage(messages.label)}
+            </Button>
+          </div>
         )}
       </ToastConsumer>
     </ToastProvider>

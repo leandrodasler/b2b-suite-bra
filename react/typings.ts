@@ -1,6 +1,7 @@
 import type { ApolloError } from 'apollo-client'
 import type { ReactNodeArray } from 'react'
 import type { InjectedIntl } from 'react-intl'
+import type { ProductTypes } from 'vtex.product-context'
 import type { Seller } from 'vtex.product-context/react/ProductTypes'
 
 interface Benefit {
@@ -11,22 +12,25 @@ interface Benefit {
   }>
 }
 
-export interface Product {
+export interface Product extends Partial<ProductTypes.Product> {
   productId: string
-  description?: string
+  description: string
   productName: string
   productReference: string
   linkText: string
   brand: string
-  brandId: number
-  items: Item[]
+  brandId: string
+  items: ProductTypes.Item[]
   categories: string[]
   benefits?: Benefit[]
 }
 
-export interface Item {
+export interface Item extends Partial<ProductTypes.Item> {
   itemId: string
   name: string
+  ean: string
+  nameComplete: string
+  complementName: string
   measurementUnit: string
   unitMultiplier: number
   images: Image[]
@@ -48,13 +52,14 @@ export interface LineItem {
 }
 
 export interface Image {
+  imageId: string
   imageUrls?: string[]
   imageUrl: string
   thresholds?: number[]
   thumbnailUrl?: string
   imageText: string
-  imageLabel?: string
-  imageTag?: string
+  imageLabel: string
+  imageTag: string
 }
 
 export interface CommercialOffer {
@@ -264,10 +269,10 @@ export interface Address {
 export interface AddItemResponse {
   data: {
     addItem: {
-      items: {
+      items: Array<{
         id: string
         seller: string | number
-      }[]
+      }>
     }
   }
 }
@@ -317,10 +322,10 @@ export interface BuyButtonWrapperProps {
 
 export interface AddToCartResponse {
   data: {
-    addToCart: {
+    addToCart: Array<{
       id: string
       seller: string | number
-    }[]
+    }>
   }
 }
 
@@ -355,12 +360,12 @@ export interface ToastMessageArgs {
 export interface OrderFormArgs {
   orderFormId?: string
   value?: number
-  items: {
+  items: Array<{
     id: string
     seller: string | number
     options: Option[]
     quantity: number
-  }[]
+  }>
   customData: {
     customApps: CustomApp[]
   }
@@ -370,12 +375,14 @@ export interface OrderFormArgs {
   }
 }
 
+// eslint-disable-next-line no-restricted-syntax
 export enum InitialSelectionType {
   complete = 'complete',
   image = 'image',
   empty = 'empty',
 }
 
+// eslint-disable-next-line no-restricted-syntax
 export enum DisplayMode {
   select = 'select',
   default = 'default',
@@ -421,4 +428,9 @@ export interface OrderFormItemInput {
   seller?: string
   uniqueId?: string
   options?: AssemblyOptionInput[]
+}
+
+export type ConditionProps = {
+  Then?: React.ComponentType
+  Else?: React.ComponentType
 }

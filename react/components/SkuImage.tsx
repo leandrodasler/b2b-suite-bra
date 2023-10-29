@@ -1,10 +1,11 @@
+import map from 'ramda/src/map'
+import path from 'ramda/src/path'
 import React, { useMemo } from 'react'
-import { useSku } from './SkuContext'
-import { path, map } from 'ramda'
-
-import generateImageConfig from '../utils/generateImageConfig'
-import { Item, Image } from '../typings'
 import { useCssHandles } from 'vtex.css-handles'
+
+import type { Image } from '../typings'
+import generateImageConfig from '../utils/generateImageConfig'
+import { useSku } from './SkuContext'
 
 interface Props {
   images: Image[]
@@ -13,7 +14,7 @@ interface Props {
 const CSS_HANDLES = ['skuImage']
 
 const SkuImagesWrapper = (props: Props) => {
-  const { sku }: { sku: Item } = useSku()
+  const { sku } = useSku()
 
   const images: Image[] = useMemo(
     () =>
@@ -24,6 +25,7 @@ const SkuImagesWrapper = (props: Props) => {
   )
 
   const handles = useCssHandles(CSS_HANDLES)
+
   return (
     <div className={handles.skuImage}>
       <img
