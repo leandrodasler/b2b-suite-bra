@@ -116,6 +116,9 @@
   "has-variations-condition": {
     "component": "HasVariationsCondition"
   },
+  "sku-has-variation-condition": {
+    "component": "SkuHasVariationCondition"
+  },
   "has-description-condition": {
     "component": "HasDescriptionCondition"
   },

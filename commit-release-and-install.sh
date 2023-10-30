@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+vtex setup -i
+
 REPO=$(git remote get-url --push origin)
 echo $'\n=============== Commiting changes to repository '$REPO
 echo "Enter commit description: "

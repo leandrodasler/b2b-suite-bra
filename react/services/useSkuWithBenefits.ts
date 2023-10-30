@@ -16,6 +16,7 @@ export const useSkuWithBenefits = () => {
   const productName = product?.productName
   const itemId = sku?.itemId
   const itemName = sku.name
+  const itemVariations = sku.variations
   const seller = getDefaultSeller(sku?.sellers)
   const commertialOffer = seller?.commertialOffer
   const measurementUnit = sku?.measurementUnit ?? ''
@@ -25,6 +26,7 @@ export const useSkuWithBenefits = () => {
   return {
     itemId,
     itemName,
+    itemVariations,
     isFirstItem,
     selectedQuantity,
     productName,
