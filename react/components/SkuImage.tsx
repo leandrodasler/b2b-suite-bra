@@ -9,9 +9,13 @@ import { useSku } from './SkuContext'
 
 interface Props {
   images: Image[]
+  thumbnailImage?: string
 }
 
 const CSS_HANDLES = ['skuImage']
+
+const hasThumbnailFactory = (thumbnailImage: string) => (image: Image) =>
+  image.imageLabel === thumbnailImage
 
 const SkuImagesWrapper = (props: Props) => {
   const { sku } = useSku()
@@ -20,17 +24,22 @@ const SkuImagesWrapper = (props: Props) => {
     () =>
       props.images != null
         ? props.images
-        : map(generateImageConfig, path(['images'], sku) || []),
+        : map(generateImageConfig, path(['images'], sku) ?? []),
     [props.images, sku]
   )
 
   const handles = useCssHandles(CSS_HANDLES)
+  const filteredImages =
+    props.thumbnailImage &&
+    images.some(hasThumbnailFactory(props.thumbnailImage))
+      ? images.filter(hasThumbnailFactory(props.thumbnailImage))
+      : images
 
   return (
     <div className={handles.skuImage}>
       <img
-        src={path([0, 'imageUrl'], images)}
-        alt={path([0, 'imageText'], images)}
+        src={path([0, 'imageUrl'], filteredImages)}
+        alt={path([0, 'imageText'], filteredImages)}
       />
     </div>
   )
