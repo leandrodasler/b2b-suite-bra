@@ -17,7 +17,6 @@
   "store/sku-list.seller.name.title": "البائع",
   "store/sku-list.sku.name.title": "إسم الصنف",
   "store/sku-list.sku.price.title": "السعر",
-  "store/sku-list.sku.quantity-selector.title": "تحديد الكمية",
   "store/sku-list.seller.price.title": "سعر البائع",
 
   "store/representative-area.title": "Representative Area",
@@ -27,7 +26,6 @@
   "store/representative-area.customersPortfolio": "Customers in portfolio",
   "store/representative-area.customersOrdersMonth": "Number of customers that ordered this month",
   "store/representative-area.remainingDaysInMonth": "Remaining days in month",
-  "store/representative-area.lastOrderLoading": "loading...",
   "store/representative-area.lastOrder": "Last order",
 
   "store/last-orders.noOrder": "No recent orders",

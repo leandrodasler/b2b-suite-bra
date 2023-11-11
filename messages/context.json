@@ -17,7 +17,6 @@
   "store/sku-list.seller.name.title": "Seller",
   "store/sku-list.sku.name.title": "Item Name",
   "store/sku-list.sku.price.title": "Unit Price",
-  "store/sku-list.sku.quantity-selector.title": "Select Quantity",
   "store/sku-list.seller.price.title": "Seller Price",
 
   "store/representative-area.title": "Representative area",
@@ -27,7 +26,6 @@
   "store/representative-area.customersPortfolio": "Customers in portfolio",
   "store/representative-area.customersOrdersMonth": "Number of customers that ordered this month",
   "store/representative-area.remainingDaysInMonth": "Remaining days in month",
-  "store/representative-area.lastOrderLoading": "loading...",
   "store/representative-area.lastOrder": "Last order",
 
   "store/last-orders.noOrder": "No recent orders",
