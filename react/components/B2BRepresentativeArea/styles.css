@@ -7,3 +7,13 @@
 .data {
   font-size: 18px;
 }
+
+.chart {
+  flex-basis: 100%;
+}
+
+@media (min-width: 64.1rem) {
+  .chart {
+    flex-basis: 45%;
+  }
+}

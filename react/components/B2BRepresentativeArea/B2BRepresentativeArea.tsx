@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
 import { FormattedMessage, useIntl } from 'react-intl'
 import { useCssHandles } from 'vtex.css-handles'
+import { useDevice } from 'vtex.device-detector'
 import { FormattedCurrency } from 'vtex.format-currency'
 import { Link, Progress } from 'vtex.styleguide'
 
@@ -9,25 +10,41 @@ import { getRemainingDaysInMonth } from '../../utils/dates'
 import { getPercent, getPercentFormatted } from '../../utils/numberFormatter'
 import { useMonthlyOrders } from '../../utils/orders'
 import B2BRepresentativeAreaSkeleton from './B2BRepresentativeAreaSkeleton'
+import Charts from './Charts'
 import './styles.css'
 
-const B2BRepresentativeArea: StorefrontFunctionComponent = () => {
+type Props = {
+  reachedValueHistoryMonths?: number
+  reachedValueHistoryMonthsMobile?: number
+}
+
+const DEFAULT_HISTORY_MONTHS = 6
+
+const B2BRepresentativeArea: StorefrontFunctionComponent<Props> = ({
+  reachedValueHistoryMonths = DEFAULT_HISTORY_MONTHS,
+  reachedValueHistoryMonthsMobile = DEFAULT_HISTORY_MONTHS,
+}) => {
   const intl = useIntl()
   const handles = useCssHandles(['title', 'data', 'description', 'value'])
+
+  const { isMobile } = useDevice()
   const { user } = React.useContext(B2BContext)
-  const { monthlyOrders, isLoading: loadingMonthlyOrders } = useMonthlyOrders()
+  const { monthlyOrders, isLoading: loadingMonthlyOrders } = useMonthlyOrders(
+    isMobile ? reachedValueHistoryMonthsMobile : reachedValueHistoryMonths
+  )
 
   const goal = monthlyOrders?.goal
   const totalValue = (monthlyOrders?.totalValue ?? 0) / 100
+  const lastValues = monthlyOrders?.lastValues
+  const productAmountMap = monthlyOrders?.productAmountMap
 
-  const percent = useMemo(() => getPercent(totalValue, goal ?? 1), [
-    goal,
-    totalValue,
-  ])
+  const percent = useMemo(() => {
+    return getPercent(totalValue, goal ?? 1)
+  }, [goal, totalValue])
 
-  const percentFormatted = useMemo(() => getPercentFormatted(percent), [
-    percent,
-  ])
+  const percentFormatted = useMemo(() => {
+    return getPercentFormatted(percent)
+  }, [percent])
 
   if (loadingMonthlyOrders) {
     return <B2BRepresentativeAreaSkeleton />
@@ -130,9 +147,31 @@ const B2BRepresentativeArea: StorefrontFunctionComponent = () => {
             )}
           </div>
         </div>
+        <Charts
+          lastValues={lastValues}
+          productAmountMap={productAmountMap}
+          goal={goal}
+        />
       </div>
     </>
   )
+}
+
+B2BRepresentativeArea.schema = {
+  title: 'B2B Representative Area',
+  type: 'object',
+  properties: {
+    reachedValueHistoryMonths: {
+      type: 'number',
+      title: 'Number of months considered in the reached value chart',
+      default: DEFAULT_HISTORY_MONTHS,
+    },
+    reachedValueHistoryMonthsMobile: {
+      type: 'number',
+      title: 'Number of months considered in the reached value chart on mobile',
+      default: DEFAULT_HISTORY_MONTHS,
+    },
+  },
 }
 
 export default B2BRepresentativeArea

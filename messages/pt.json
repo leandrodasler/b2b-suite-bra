@@ -27,6 +27,9 @@
   "store/representative-area.customersOrdersMonth": "Nº de clientes que fizeram pedido este mês",
   "store/representative-area.remainingDaysInMonth": "Dias remanescentes no mês",
   "store/representative-area.lastOrder": "Último pedido",
+  "store/representative-area.moreStats": "Visualizar gráficos do representante",
+  "store/representative-area.reachedValueTimeSeries": "Série histórica do valor atingido nos últimos {months} meses",
+  "store/representative-area.topSellingProducts": "Produtos mais vendidos",
 
   "store/last-orders.noOrder": "Nenhum pedido recente",
   "store/last-orders.orderNumber": "Pedido nº",

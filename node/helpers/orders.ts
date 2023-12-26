@@ -1,4 +1,5 @@
 import type { Maybe } from '@vtex/api'
+import type { OrderDetailResponse } from '@vtex/clients'
 
 import { convertStringCurrencyToNumber } from './numbers'
 
@@ -25,6 +26,33 @@ export const getDistintClientAmount = (orders: Orders) => {
   )
 
   return Object.keys(distinctClients).length
+}
+
+export const getProductAmountMap = (
+  orders: Array<OrderDetailResponse & OrdersItem>
+) => {
+  const productAmountMap: Record<string, number> = {}
+
+  orders.forEach(order => {
+    order.items.forEach(item => {
+      if (item.name in productAmountMap) {
+        productAmountMap[item.name] += item.quantity
+      } else {
+        productAmountMap[item.name] = item.quantity
+      }
+    })
+  })
+
+  const keyValueArray = Object.entries(productAmountMap)
+
+  keyValueArray.sort((a, b) => b[1] - a[1])
+  const sortedObject: { [key: string]: number } = {}
+
+  keyValueArray.slice(0, 3).forEach(([key, value]) => {
+    sortedObject[key] = value
+  })
+
+  return sortedObject
 }
 
 export const getGoal = async (context: Context) => {

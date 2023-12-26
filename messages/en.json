@@ -27,6 +27,9 @@
   "store/representative-area.customersOrdersMonth": "Number of customers that ordered this month",
   "store/representative-area.remainingDaysInMonth": "Remaining days in month",
   "store/representative-area.lastOrder": "Last order",
+  "store/representative-area.moreStats": "View charts from representative",
+  "store/representative-area.reachedValueTimeSeries": "Time series of reached value in the last {months} months",
+  "store/representative-area.topSellingProducts": "Top selling products",
 
   "store/last-orders.noOrder": "No recent orders",
   "store/last-orders.orderNumber": "Order No.",

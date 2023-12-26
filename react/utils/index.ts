@@ -3,12 +3,19 @@ declare global {
     __RUNTIME__: {
       workspace: string
       account: string
+      culture: {
+        locale: string
+      }
     }
   }
 }
 
 export const {
-  __RUNTIME__: { workspace, account },
+  __RUNTIME__: {
+    workspace,
+    account,
+    culture: { locale },
+  },
 } = window
 
 export const commonFetchOptions: RequestInit = {
@@ -19,5 +26,4 @@ export const commonFetchOptions: RequestInit = {
   credentials: 'same-origin',
 }
 
-export const getLocale = () =>
-  document.getElementsByTagName('html')[0].getAttribute('lang') || 'pt-BR'
+export const getLocale = () => locale

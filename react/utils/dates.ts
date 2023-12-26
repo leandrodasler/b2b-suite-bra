@@ -12,6 +12,16 @@ export const formatDate = (date: string): string => {
   return `${formattedDate} - ${formattedHour}`
 }
 
+export const getMonthFormatted = (month: number, isLong = false): string => {
+  const now = new Date()
+
+  now.setMonth(month)
+
+  return new Intl.DateTimeFormat(getLocale(), {
+    month: isLong ? 'long' : 'short',
+  }).format(now)
+}
+
 export const getRemainingDaysInMonth = () => {
   const today = new Date()
   const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0)

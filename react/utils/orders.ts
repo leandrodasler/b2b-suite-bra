@@ -56,6 +56,11 @@ interface Order {
 interface MonthlyOrders {
   goal: number
   totalValue: number
+  lastValues: Array<{
+    month: number
+    value: number
+  }>
+  productAmountMap: Record<string, number>
   monthlyOrdersDistinctClientAmount: number
   allOrdersDistinctClientAmount: number
   lastOrderId: string
@@ -77,10 +82,11 @@ export const getOrders = async (limit: number): Promise<Order[]> => {
 }
 
 export const useLastOrders = (limit: number) => {
-  const { data: orders, isLoading, error } = useQuery<
-    Order[] | undefined,
-    Error
-  >({
+  const {
+    data: orders,
+    isLoading,
+    error,
+  } = useQuery<Order[] | undefined, Error>({
     queryKey: ['last-orders', String(limit), workspace],
     queryFn: async () => getOrders(limit),
   })
@@ -88,9 +94,11 @@ export const useLastOrders = (limit: number) => {
   return { orders, isLoading, error }
 }
 
-export const getMonthlyOrders = async (): Promise<MonthlyOrders> => {
+export const getMonthlyOrders = async (
+  reachedValueHistoryMonths: number
+): Promise<MonthlyOrders> => {
   const monthlyOrdersResponse = await fetch(
-    `/_v/private/b2b-suite-bra/monthly-orders?workspace=${workspace}`,
+    `/_v/private/b2b-suite-bra/monthly-orders?reachedValueHistoryMonths=${reachedValueHistoryMonths}&workspace=${workspace}`,
     commonFetchOptions
   )
 
@@ -104,13 +112,14 @@ export const getMonthlyOrders = async (): Promise<MonthlyOrders> => {
   return monthlyOrdersResponse.json()
 }
 
-export const useMonthlyOrders = () => {
-  const { data: monthlyOrders, isLoading, error } = useQuery<
-    MonthlyOrders | undefined,
-    Error
-  >({
-    queryKey: ['monthly-orders', workspace],
-    queryFn: getMonthlyOrders,
+export const useMonthlyOrders = (reachedValueHistoryMonths: number) => {
+  const {
+    data: monthlyOrders,
+    isLoading,
+    error,
+  } = useQuery<MonthlyOrders | undefined, Error>({
+    queryKey: ['monthly-orders', workspace, reachedValueHistoryMonths],
+    queryFn: async () => getMonthlyOrders(reachedValueHistoryMonths),
   })
 
   return { monthlyOrders, isLoading, error }
