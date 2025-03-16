@@ -33,7 +33,7 @@ export const queryClient = new QueryClient({
 })
 
 export const withQueryProvider = <P,>(Component?: FC<P>) => {
-  const WrappedComponent: FC<P> = (props) => (
+  const WrappedComponent: FC<P> = props => (
     <QueryClientProvider client={queryClient}>
       {Component && <Component {...props} />}
     </QueryClientProvider>
@@ -73,3 +73,5 @@ export * from './useFixedPrices'
 export * from './useProductWithBenefits'
 
 export * from './useSkuWithBenefits'
+
+export * from './useTaxes'

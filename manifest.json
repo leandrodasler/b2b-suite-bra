@@ -40,6 +40,7 @@
   },
   "registries": ["smartcheckout"],
   "policies": [
+    { "name": "GerenciarPromocoesETarifas" },
     {
       "name": "colossus-fire-event"
     },
@@ -123,6 +124,13 @@
       "attrs": {
         "host": "googleapis.com",
         "path": "/oauth2/v4/*"
+      }
+    },
+    {
+      "name": "outbound-access",
+      "attrs": {
+        "host": "portal.vtexcommercestable.com.br",
+        "path": "/api/rnb/pvt/taxes/calculatorconfiguration"
       }
     }
   ],

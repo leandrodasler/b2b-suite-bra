@@ -127,5 +127,8 @@
   },
   "custom-product-description": {
     "component": "CustomProductDescription"
+  },
+  "sku-taxes": {
+    "component": "SkuTaxes"
   }
 }

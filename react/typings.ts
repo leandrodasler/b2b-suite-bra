@@ -38,6 +38,10 @@ export interface Item extends Partial<ProductTypes.Item> {
   options?: BuyButtonItemOption[]
   variations: Variation[]
   quantity: number
+  priceTags: Array<{
+    name: string
+    identifier: string
+  }>
 }
 
 export interface Variation {

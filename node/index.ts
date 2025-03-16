@@ -17,6 +17,7 @@ import getOrder from './middlewares/getOrder'
 import getOrders from './middlewares/getOrders'
 import getPermissions from './middlewares/getPermissions'
 import setResponse from './middlewares/setResponse'
+import getAllTaxes from './middlewares/getAllTaxes'
 
 const TIMEOUT_MS = 4 * 1000
 const CONCURRENCY = 10
@@ -90,6 +91,9 @@ export default new Service({
     }),
     order: method({
       GET: [getPermissions, getOrder, setResponse],
+    }),
+    getAllTaxes: method({
+      GET: [getAllTaxes, setResponse],
     }),
   },
 })

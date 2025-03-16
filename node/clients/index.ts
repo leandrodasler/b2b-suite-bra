@@ -4,6 +4,7 @@ import GoogleApiToken from './googleApiToken'
 import GoogleSheets from './googleSheets'
 import OMS from './oms'
 import StorefrontPermissions from './storefrontPermissions'
+import TaxClient from './taxes'
 import VtexId from './vtexId'
 
 export class Clients extends IOClients {
@@ -25,5 +26,9 @@ export class Clients extends IOClients {
 
   public get googleSheetsClient() {
     return this.getOrSet('googleSheetsClient', GoogleSheets)
+  }
+
+  public get taxClient() {
+    return this.getOrSet('taxClient', TaxClient)
   }
 }
