@@ -12,12 +12,12 @@ import type {
 } from '@vtex/clients'
 
 import { Clients } from './clients'
+import getAllTaxes from './middlewares/getAllTaxes'
 import getMonthlyOrders from './middlewares/getMonthlyOrders'
 import getOrder from './middlewares/getOrder'
 import getOrders from './middlewares/getOrders'
 import getPermissions from './middlewares/getPermissions'
 import setResponse from './middlewares/setResponse'
-import getAllTaxes from './middlewares/getAllTaxes'
 
 const TIMEOUT_MS = 4 * 1000
 const CONCURRENCY = 10
@@ -78,6 +78,17 @@ declare global {
   type Context = ServiceContext<Clients, State>
 
   type Next = () => Promise<void>
+
+  type Tax = {
+    idCalculatorConfiguration: string
+    name: string
+    scope: { allCatalog: boolean }
+    isActive: boolean
+    beginDate: string
+    endDate: string
+  }
+
+  type AllTaxesResponse = { items: Tax[] }
 }
 
 export default new Service({
