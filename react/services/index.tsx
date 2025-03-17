@@ -2,6 +2,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import type { FC } from 'react'
 import React from 'react'
 
+export * from './useCurrentTradePolicy'
+export * from './useFixedPrices'
+export * from './useProductWithBenefits'
+export * from './useSkuWithBenefits'
+export * from './useTaxes'
+
 export interface ApiResponse {
   code?: string
   message?: string
@@ -32,7 +38,7 @@ export const queryClient = new QueryClient({
   },
 })
 
-export const withQueryProvider = <P,>(Component?: FC<P>) => {
+export function withQueryProvider<P>(Component?: FC<P>) {
   const WrappedComponent: FC<P> = props => (
     <QueryClientProvider client={queryClient}>
       {Component && <Component {...props} />}
@@ -42,13 +48,12 @@ export const withQueryProvider = <P,>(Component?: FC<P>) => {
   return WrappedComponent
 }
 
-export const apiRequestFactory = <T extends ApiResponse>(
+export function apiRequestFactory<T extends ApiResponse>(
   url: string,
   method = 'GET'
-) => {
-  return async () => {
+) {
+  return async function request() {
     const response = await fetch(url, { method })
-
     const json: T = await response.json()
 
     if (!response.ok) {
@@ -65,13 +70,3 @@ export const apiRequestFactory = <T extends ApiResponse>(
     return json
   }
 }
-
-export * from './useCurrentTradePolicy'
-
-export * from './useFixedPrices'
-
-export * from './useProductWithBenefits'
-
-export * from './useSkuWithBenefits'
-
-export * from './useTaxes'
