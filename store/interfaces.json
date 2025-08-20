@@ -130,5 +130,11 @@
   },
   "sku-taxes": {
     "component": "SkuTaxes"
+  },
+  "b2b-organization-form": {
+    "component": "B2BOrganizationForm"
+  },
+  "store.organization-request-cnpj": {
+    "allowed": ["b2b-organization-form"]
   }
 }

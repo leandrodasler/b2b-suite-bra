@@ -36,5 +36,8 @@
   },
   "sku-buy-button": {
     "blocks": ["item-buy-button"]
+  },
+  "store.organization-request-cnpj": {
+    "blocks": ["b2b-organization-form"]
   }
 }
