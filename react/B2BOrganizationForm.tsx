@@ -147,6 +147,8 @@ function B2BOrganizationForm() {
       const nomeCompleto = socio?.nome_socio ?? (data.razao_social || '')
       const [firstName, ...lastNameParts] = nomeCompleto.split(' ')
       const lastName = lastNameParts.join(' ')
+      const costCenterSuffix =
+        data.nome_fantasia || data.razao_social || 'Padrão'
 
       // Atualiza o formulário
       setFormData(prev => ({
@@ -154,7 +156,7 @@ function B2BOrganizationForm() {
         organizationName: data.razao_social || '',
         tradeName: data.nome_fantasia || '',
         businessDocument: formatarCNPJ(data.cnpj || ''),
-        costCenterName: `Centro de Custo - ${data.razao_social}`,
+        costCenterName: `Centro de Custo - ${costCenterSuffix}`,
         adminEmail: data.email || '',
         adminFirstName: firstName || '',
         adminLastName: lastName || '',
@@ -345,7 +347,7 @@ function B2BOrganizationForm() {
         <h3 style={{ marginBottom: '15px', color: '#495057' }}>
           Consulta de CNPJ
         </h3>
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
           <input
             disabled={searching}
             type="text"
