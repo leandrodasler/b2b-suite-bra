@@ -1,5 +1,5 @@
 import React from 'react'
-import { FixedPrice, Maybe } from 'ssesandbox04.progressive-discount-table'
+import type { FixedPrice, Maybe } from 'ssesandbox04.progressive-discount-table'
 
 import {
   useCurrentTradePolicy,
@@ -14,9 +14,11 @@ const SkuPriceByQuantity = () => {
     itemId,
     isFirstItem,
     price = 0,
+    listPrice,
     benefits,
     teasers,
   } = useSkuWithBenefits()
+
   const { data: tradePolicyData } = useCurrentTradePolicy()
   const { data: fixedPrices } = useFixedPrices(
     itemId,
@@ -29,6 +31,7 @@ const SkuPriceByQuantity = () => {
       <SkuPriceByQuantityTable
         isFirstItem={isFirstItem}
         basePrice={price}
+        listPrice={listPrice}
         benefits={fixedPrices.map((f: Maybe<FixedPrice>) => ({
           minQuantity: f?.minQuantity ?? 1,
           fixedPrice: f?.value,
@@ -43,6 +46,7 @@ const SkuPriceByQuantity = () => {
         <SkuPriceByQuantityTable
           isFirstItem={isFirstItem}
           basePrice={price}
+          listPrice={listPrice}
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           benefits={teasers.map((t: any) => ({
             minQuantity: t.conditions?.minimumQuantity,
@@ -59,6 +63,7 @@ const SkuPriceByQuantity = () => {
       <SkuPriceByQuantityTable
         isFirstItem={isFirstItem}
         basePrice={price}
+        listPrice={listPrice}
         benefits={[{ minQuantity: 1, fixedPrice: price }]}
       />
     )
@@ -68,6 +73,7 @@ const SkuPriceByQuantity = () => {
     <SkuPriceByQuantityTable
       isFirstItem={isFirstItem}
       basePrice={price}
+      listPrice={listPrice}
       benefits={benefits.map(b => ({
         minQuantity: b?.items?.[0]?.minQuantity ?? 1,
         discount: b?.items?.[0]?.discount ?? 0,

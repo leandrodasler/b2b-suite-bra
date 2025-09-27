@@ -21,6 +21,7 @@ export const useSkuWithBenefits = () => {
   const commertialOffer = seller?.commertialOffer
   const measurementUnit = sku?.measurementUnit ?? ''
   const price = commertialOffer?.Price
+  const listPrice = commertialOffer?.ListPrice
   const teasers = commertialOffer?.teasers
 
   return {
@@ -33,6 +34,7 @@ export const useSkuWithBenefits = () => {
     benefits,
     measurementUnit,
     price,
+    listPrice,
     teasers,
   }
 }

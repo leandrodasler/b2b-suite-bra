@@ -21,7 +21,12 @@ const BenefitsCondition = ({ Then, Else }: Props) => {
     tradePolicyData?.tradePolicy
   )
 
-  if (fixedPrices?.length || benefits?.length) {
+  if (
+    (fixedPrices?.length &&
+      (fixedPrices.length > 1 ||
+        (fixedPrices.length === 1 && fixedPrices[0].minQuantity > 1))) ||
+    benefits?.length
+  ) {
     return !!Then && <Then />
   }
 

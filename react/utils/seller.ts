@@ -5,7 +5,7 @@ export const getDefaultSeller = (sellers?: Seller[]) => {
     return
   }
 
-  const defaultSeller = sellers.find((seller) => seller.sellerDefault)
+  const defaultSeller = sellers.find(seller => seller.sellerDefault)
 
   if (!defaultSeller) {
     return sellers[0]
