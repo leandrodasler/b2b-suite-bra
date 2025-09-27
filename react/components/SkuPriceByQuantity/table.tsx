@@ -48,16 +48,18 @@ const SkuPriceByQuantityTable = ({
   return (
     <table className={`w-100 ${handles.priceByQuantityTable}`} cellPadding="4">
       <tbody>
-        {(isFirstItem || isMobile) && benefits.length > 1 && firstQuantity > 1 && (
-          <tr className={handles.priceByQuantityHeader}>
-            {benefitsToRender.map((benefit, index) => (
-              <th key={`benefit-quantity-${index}`} className="bg-muted-4">
-                {benefit?.minQuantity}
-                {index === benefitsToRender.length - 1 && '+'}
-              </th>
-            ))}
-          </tr>
-        )}
+        {(isFirstItem || isMobile) &&
+          benefitsToRender.length > 1 &&
+          firstQuantity > 1 && (
+            <tr className={handles.priceByQuantityHeader}>
+              {benefitsToRender.map((benefit, index) => (
+                <th key={`benefit-quantity-${index}`} className="bg-muted-4">
+                  {benefit?.minQuantity}
+                  {index === benefitsToRender.length - 1 && '+'}
+                </th>
+              ))}
+            </tr>
+          )}
         <tr>
           {benefitsToRender.map((benefit, index) => (
             <td
