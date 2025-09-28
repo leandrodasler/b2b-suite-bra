@@ -15,6 +15,9 @@ interface Props {
   title?: string
 }
 
+const getPriceWithDiscount = (price: number, discount = 0) =>
+  price * (1 - discount / 100)
+
 const SkuPriceByQuantityTable = ({
   benefits,
   basePrice,
@@ -34,46 +37,42 @@ const SkuPriceByQuantityTable = ({
     ...benefits,
   ]
 
-  const renderFixedPrice = (fixedPrice: number) => (
-    <FormattedCurrency value={fixedPrice} />
-  )
-
-  const renderPromotionPrice = (price: number, discount: number) =>
-    renderFixedPrice(price * (1 - discount / 100))
-
-  const renderListPrice = (price: number) => (
-    <span className="strike c-muted-2 mr2">{renderFixedPrice(price)}</span>
-  )
-
   return (
     <table className={`w-100 ${handles.priceByQuantityTable}`} cellPadding="4">
       <tbody>
-        {(isFirstItem || isMobile) &&
-          benefitsToRender.length > 1 &&
-          firstQuantity > 1 && (
-            <tr className={handles.priceByQuantityHeader}>
-              {benefitsToRender.map((benefit, index) => (
-                <th key={`benefit-quantity-${index}`} className="bg-muted-4">
-                  {benefit?.minQuantity}
-                  {index === benefitsToRender.length - 1 && '+'}
-                </th>
-              ))}
-            </tr>
-          )}
+        {(isFirstItem || isMobile) && benefitsToRender.length > 1 && (
+          <tr className={handles.priceByQuantityHeader}>
+            {benefitsToRender.map((benefit, index) => (
+              <th key={`benefit-quantity-${index}`} className="bg-muted-4">
+                {benefit?.minQuantity}
+                {index === benefitsToRender.length - 1 && '+'}
+              </th>
+            ))}
+          </tr>
+        )}
         <tr>
-          {benefitsToRender.map((benefit, index) => (
-            <td
-              align="center"
-              key={`benefit-price-${index}`}
-              className={handles.priceByQuantityValue}
-            >
-              {listPrice && renderListPrice(listPrice)}
-              {benefit?.fixedPrice
-                ? renderFixedPrice(benefit.fixedPrice)
-                : !!benefit?.discount &&
-                  renderPromotionPrice(basePrice, benefit.discount)}
-            </td>
-          ))}
+          {benefitsToRender.map((benefit, index) => {
+            const price =
+              benefit?.fixedPrice ??
+              getPriceWithDiscount(basePrice, benefit.discount)
+
+            return (
+              <td
+                align="center"
+                key={`benefit-price-${index}`}
+                className={handles.priceByQuantityValue}
+              >
+                <div className="flex flex-column">
+                  {listPrice && listPrice > price && (
+                    <span className="strike c-muted-2">
+                      <FormattedCurrency value={listPrice} />
+                    </span>
+                  )}
+                  {price !== null && <FormattedCurrency value={price} />}
+                </div>
+              </td>
+            )
+          })}
         </tr>
       </tbody>
     </table>

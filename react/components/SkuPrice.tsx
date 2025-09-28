@@ -27,19 +27,23 @@ const SkuPrice = ({ showLabel }: Props) => {
     <div
       className={`pt3 pb5 t-body c-muted-1 lh-copy ${handles.priceContainer}`}
     >
-      {showLabel && (
-        <span className="t-body c-on-base fw7 pr3">
-          <FormattedMessage id="store/sku-list.sku.price.title" />:{' '}
-        </span>
-      )}
-      {listPrice && listPrice > sellingPrice && (
-        <span className="strike c-muted-2 mr2">
-          <FormattedCurrency value={listPrice} />
-        </span>
-      )}
-      <span>
-        <FormattedCurrency value={sellingPrice} />
-      </span>
+      <div className="inline-flex">
+        {showLabel && (
+          <span className="t-body c-on-base fw7 pr3">
+            <FormattedMessage id="store/sku-list.sku.price.title" />:{' '}
+          </span>
+        )}
+        <div className="flex flex-column">
+          {listPrice && listPrice > sellingPrice && (
+            <span className="strike c-muted-2">
+              <FormattedCurrency value={listPrice} />
+            </span>
+          )}
+          <span>
+            <FormattedCurrency value={sellingPrice} />
+          </span>
+        </div>
+      </div>
     </div>
   ) : (
     <div />
