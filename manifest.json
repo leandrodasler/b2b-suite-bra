@@ -1,7 +1,7 @@
 {
   "vendor": "ssesandbox04",
   "name": "b2b-suite-bra",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "title": "B2B Suite Brasil",
   "description": "Provides blocks for B2B facilities in the storefront",
   "scripts": {
@@ -38,7 +38,9 @@
     "vtex.store-image": "0.x",
     "ssesandbox04.progressive-discount-table": "2.x"
   },
-  "registries": ["smartcheckout"],
+  "registries": [
+    "smartcheckout"
+  ],
   "policies": [
     {
       "name": "GerenciarPromocoesETarifas"
@@ -164,7 +166,9 @@
   },
   "billingOptions": {
     "type": "free",
-    "availableCountries": ["*"]
+    "availableCountries": [
+      "*"
+    ]
   },
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
