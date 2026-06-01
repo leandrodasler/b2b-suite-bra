@@ -68,7 +68,7 @@ interface MonthlyOrders {
 
 export const getOrders = async (limit: number): Promise<Order[]> => {
   const ordersResponse = await fetch(
-    `/_v/private/b2b-suite-bra/orders/?page=1&per_page=${limit}&workspace=${workspace}`,
+    `/_v/private/b2b-suite-bra/orders/?page=1&includeProfileLastPurchases=true&per_page=${limit}&workspace=${workspace}`,
     commonFetchOptions
   )
 
