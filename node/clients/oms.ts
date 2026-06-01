@@ -1,14 +1,14 @@
 import type { IOContext, InstanceOptions } from '@vtex/api'
 import { JanusClient } from '@vtex/api'
 
-const BASE_URL = '/api/oms/pvt/orders'
+const BASE_URL = '/api/oms/user/orders'
 
 export default class OMSClient extends JanusClient {
   constructor(context: IOContext, options?: InstanceOptions) {
     super(context, {
       ...options,
       headers: {
-        VtexIdclientAutCookie: context.authToken,
+        VtexIdclientAutCookie: context.storeUserAuthToken ?? '',
       },
     })
   }
@@ -18,7 +18,7 @@ export default class OMSClient extends JanusClient {
   }
 
   public async search(query: string) {
-    return this.get<Orders>(`?${query}`)
+    return this.http.get<Orders>(`${BASE_URL}?${query}`)
   }
 
   public async getOrder(id: string) {
